@@ -17,8 +17,7 @@
                 extend: {
                     colors: {
                         "primary": "#005ac1", "on-primary": "#ffffff", "secondary": "#535f70",
-                        "surface": "#f8f9ff", "on-surface": "#191c20", "surface-container": "#f0f0f7",
-                        "surface-container-lowest": "#ffffff"
+                        "surface": "#f8f9ff", "on-surface": "#191c20", "surface-container": "#f0f0f7"
                     },
                     borderRadius: { '3xl': '24px', '4xl': '32px' }
                 }
@@ -50,23 +49,38 @@
     <section class="bg-primary text-on-primary p-7 rounded-4xl shadow-2xl shadow-blue-200/50 mb-6">
         <p class="text-xs opacity-70 mb-1 font-medium">목표까지 남은 잔액</p>
         <h2 id="remainingStr" class="text-3xl font-bold mb-8">₩ 0</h2>
-        <div class="space-y-5">
+        
+        <div class="space-y-6">
             <div>
-                <div class="flex justify-between text-[11px] mb-2 font-bold opacity-90 uppercase tracking-wider">
-                    <span>Target ₩ 120,155,979</span>
+                <div class="flex justify-between text-[11px] mb-2 font-bold opacity-90 tracking-wider">
+                    <span>GOAL ₩ 120,155,979</span>
                     <span id="percentStr">0%</span>
                 </div>
                 <div class="w-full bg-white/20 h-2.5 rounded-full overflow-hidden">
-                    <div id="progressBar" class="bg-white h-full transition-all duration-1000 ease-out" style="width: 0%"></div>
+                    <div id="progressBar" class="bg-white h-full transition-all duration-1000" style="width: 0%"></div>
                 </div>
             </div>
-            <div class="flex items-center justify-between pt-4 border-t border-white/10">
-                <span class="text-sm font-medium opacity-80">현재 보유 자산</span>
-                <div class="flex items-center gap-1">
-                    <span class="text-xs font-bold">₩</span>
-                    <input type="text" id="baseAmount" oninput="formatInput(this); triggerSave();" 
-                           class="!bg-transparent text-white font-black p-0 w-32 text-right border-none focus:ring-0 focus:outline-none appearance-none" 
-                           style="background-color: transparent !important; -webkit-appearance: none;">
+            
+            <div class="grid grid-cols-3 gap-2 pt-4 border-t border-white/10">
+                <div class="text-center">
+                    <p class="text-[10px] opacity-70 mb-1">자원 보유</p>
+                    <div class="flex items-center justify-center gap-0.5">
+                        <span class="text-[10px] font-bold">₩</span>
+                        <input type="text" id="baseJawon" oninput="formatInput(this); triggerSave();" 
+                               class="!bg-transparent text-white font-bold p-0 w-full text-center border-none focus:ring-0 focus:outline-none appearance-none text-xs" value="25,000,000" style="background-color: transparent !important; -webkit-appearance: none;">
+                    </div>
+                </div>
+                <div class="text-center">
+                    <p class="text-[10px] opacity-70 mb-1">예인 보유</p>
+                    <div class="flex items-center justify-center gap-0.5">
+                        <span class="text-[10px] font-bold">₩</span>
+                        <input type="text" id="baseYein" oninput="formatInput(this); triggerSave();" 
+                               class="!bg-transparent text-white font-bold p-0 w-full text-center border-none focus:ring-0 focus:outline-none appearance-none text-xs" value="25,000,000" style="background-color: transparent !important; -webkit-appearance: none;">
+                    </div>
+                </div>
+                <div class="text-center border-l border-white/10">
+                    <p class="text-[10px] opacity-100 font-bold mb-1">총합 자산</p>
+                    <p id="totalAssetsStr" class="text-xs font-black">₩ 0</p>
                 </div>
             </div>
         </div>
@@ -82,7 +96,7 @@
                 <p class="text-[10px] text-secondary font-bold uppercase mb-1">월 평균 저축</p>
                 <p id="avgSavedStr" class="font-bold text-on-surface">₩ 0</p>
             </div>
-            <div id="predictionCard" class="bg-slate-50 p-4 rounded-2xl">
+            <div id="predictionCard" class="bg-slate-50 p-4 rounded-2xl transition-all">
                 <p class="text-[10px] text-secondary font-bold uppercase mb-1">예상 결과</p>
                 <p id="predictionResult" class="font-bold text-sm">계산 중...</p>
             </div>
@@ -107,10 +121,10 @@
             </div>
             <div>
                 <label class="text-[10px] text-secondary font-bold ml-1 mb-1 block">메모</label>
-                <input type="text" id="saveMemo" placeholder="내용을 입력하세요" class="w-full text-sm py-3.5 px-4">
+                <input type="text" id="saveMemo" placeholder="누가 저축했는지 적어보세요" class="w-full text-sm py-3.5 px-4">
             </div>
             <div class="flex gap-3 pt-2">
-                <button onclick="addRecord(1)" class="flex-[2] bg-primary text-white font-bold py-4 rounded-2xl active:scale-95 transition-transform">저축</button>
+                <button onclick="addRecord(1)" class="flex-[2] bg-primary text-white font-bold py-4 rounded-2xl active:scale-95 transition-transform shadow-lg shadow-blue-100">저축</button>
                 <button onclick="addRecord(-1)" class="flex-1 bg-slate-100 text-secondary font-bold py-4 rounded-2xl active:scale-95 transition-transform">지출</button>
             </div>
         </div>
@@ -122,17 +136,17 @@
         const GAS_URL = "https://script.google.com/macros/s/AKfycbwzAqYUAW9aqaLj1l1ibcZa57hhzpLpLOEEODTmgDlLVPhc5366AsoaPjaR7u2VYR4Z/exec"; 
         const TARGET_AMOUNT = 120155979;
         const TOTAL_MONTHS = 27;
-        let baseAmount = 50000000;
+        
+        let baseJawon = 25000000;
+        let baseYein = 25000000;
         let records = [];
 
-        // 실시간 콤마 포맷팅 함수
         function formatInput(el) {
             let val = el.value.replace(/[^0-9]/g, "");
             if (val.length > 0) el.value = parseInt(val).toLocaleString();
             else el.value = "";
         }
 
-        // 콤마 제거 후 숫자 반환 함수
         function getRawValue(elId) {
             return parseInt(document.getElementById(elId).value.replace(/,/g, "")) || 0;
         }
@@ -140,12 +154,24 @@
         window.onload = async function() {
             const today = new Date();
             document.getElementById('saveMonth').value = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}`;
+            
             try {
                 const response = await fetch(GAS_URL);
                 const data = await response.json();
-                baseAmount = data.baseAmount;
+                
+                // 구글 시트에서 자산 데이터를 자원/예인으로 나누어 저장하지 않았다면 5:5로 초기화
+                // (이후 한 번 저장하면 값이 고정됩니다)
+                if(data.baseJawon) {
+                    baseJawon = data.baseJawon;
+                    baseYein = data.baseYein;
+                } else {
+                    baseJawon = data.baseAmount / 2;
+                    baseYein = data.baseAmount / 2;
+                }
+                
                 records = data.records;
-                document.getElementById('baseAmount').value = baseAmount.toLocaleString();
+                document.getElementById('baseJawon').value = baseJawon.toLocaleString();
+                document.getElementById('baseYein').value = baseYein.toLocaleString();
                 document.getElementById('syncStatus').innerHTML = '<span class="material-symbols-outlined text-[14px] text-green-500">cloud_done</span> 실시간 동기화 완료';
                 updateUI();
             } catch (error) {
@@ -154,23 +180,31 @@
         };
 
         async function triggerSave() {
-            document.getElementById('syncStatus').innerHTML = '<span class="material-symbols-outlined text-[14px] animate-spin">sync</span> 저장 중...';
-            baseAmount = getRawValue('baseAmount');
+            document.getElementById('syncStatus').innerHTML = '<span class="material-symbols-outlined text-[14px] animate-spin">sync</span> 서버 저장 중...';
+            baseJawon = getRawValue('baseJawon');
+            baseYein = getRawValue('baseYein');
             updateUI();
+            
             try {
-                await fetch(GAS_URL, { method: 'POST', body: JSON.stringify({ baseAmount, records }), headers: { 'Content-Type': 'text/plain;charset=utf-8' } });
+                // 구글 시트 앱스 스크립트의 doPost도 baseJawon, baseYein을 받도록 수정이 필요할 수 있으나, 
+                // 일단 호환성을 위해 baseAmount로 합쳐서 보내거나 추가 필드로 전송
+                await fetch(GAS_URL, { 
+                    method: 'POST', 
+                    body: JSON.stringify({ baseJawon, baseYein, baseAmount: baseJawon + baseYein, records }), 
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' } 
+                });
                 document.getElementById('syncStatus').innerHTML = '<span class="material-symbols-outlined text-[14px] text-green-500">cloud_done</span> 저장 완료';
             } catch (e) { document.getElementById('syncStatus').innerHTML = '⚠️ 실패'; }
         }
 
         function addRecord(type) {
             const month = document.getElementById('saveMonth').value;
-            const amountInput = document.getElementById('saveAmount');
             let amount = getRawValue('saveAmount');
             if (!month || amount <= 0) return;
             if (type === -1) amount = -amount;
             records.push({ id: Date.now(), month, amount, memo: document.getElementById('saveMemo').value || (type === 1 ? '정기 저축' : '예외 지출') });
-            amountInput.value = ''; document.getElementById('saveMemo').value = '';
+            document.getElementById('saveAmount').value = ''; 
+            document.getElementById('saveMemo').value = '';
             triggerSave();
         }
 
@@ -180,22 +214,34 @@
 
         function updateUI() {
             const totalSaved = records.reduce((sum, r) => sum + parseInt(r.amount), 0);
-            const currentTotal = getRawValue('baseAmount') + totalSaved;
-            const remaining = Math.max(0, TARGET_AMOUNT - currentTotal);
+            
+            // 핵심 로직: 현재 총 자산 = (자원 초기 + 예인 초기) + 저축 누적액
+            const currentTotalAssets = getRawValue('baseJawon') + getRawValue('baseYein') + totalSaved;
+            const remaining = Math.max(0, TARGET_AMOUNT - currentTotalAssets);
+            
+            document.getElementById('totalAssetsStr').textContent = `₩ ${currentTotalAssets.toLocaleString()}`;
             document.getElementById('remainingStr').textContent = `₩ ${remaining.toLocaleString()}`;
-            let percent = Math.min(100, (currentTotal / TARGET_AMOUNT) * 100);
+            
+            let percent = Math.min(100, (currentTotalAssets / TARGET_AMOUNT) * 100);
             document.getElementById('progressBar').style.width = percent + "%";
             document.getElementById('percentStr').textContent = `${percent.toFixed(1)}%`;
+
             const uniqueMonths = new Set(records.map(r => getSafeMonthDisplay(r.month))).size;
             if (uniqueMonths > 0) {
                 const avg = totalSaved / uniqueMonths;
                 document.getElementById('avgSavedStr').textContent = `₩ ${Math.round(avg).toLocaleString()}`;
-                const diff = (currentTotal + (avg * Math.max(0, TOTAL_MONTHS - uniqueMonths))) - TARGET_AMOUNT;
+                const diff = (currentTotalAssets + (avg * Math.max(0, TOTAL_MONTHS - uniqueMonths))) - TARGET_AMOUNT;
                 const pEl = document.getElementById('predictionResult');
                 const pCard = document.getElementById('predictionCard');
-                if (diff >= 0) { pEl.innerHTML = `<span class="text-primary">+ ₩ ${Math.round(diff/10000).toLocaleString()}만</span>`; pCard.style.backgroundColor = "#eff6ff"; }
-                else { pEl.innerHTML = `<span class="text-red-500">- ₩ ${Math.round(Math.abs(diff)/10000).toLocaleString()}만</span>`; pCard.style.backgroundColor = "#fff1f2"; }
+                if (diff >= 0) { 
+                    pEl.innerHTML = `<span class="text-primary font-bold">+ ₩ ${Math.round(diff/10000).toLocaleString()}만</span>`; 
+                    pCard.style.backgroundColor = "#eff6ff"; 
+                } else { 
+                    pEl.innerHTML = `<span class="text-red-500 font-bold">- ₩ ${Math.round(Math.abs(diff)/10000).toLocaleString()}만</span>`; 
+                    pCard.style.backgroundColor = "#fff1f2"; 
+                }
             }
+
             const listEl = document.getElementById('historyList'); listEl.innerHTML = '';
             [...records].sort((a,b) => b.id - a.id).forEach(r => {
                 const isEx = r.amount < 0;
