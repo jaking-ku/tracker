@@ -2,8 +2,14 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>엔네이처 미래도 59㎡ 입주 자금 트래커</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="미래도59">
+    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/25/25694.png">
+    
+    <title>엔네이처 미래도 자금 트래커</title>
     <style>
         :root {
             --primary: #4A90E2;
@@ -19,275 +25,178 @@
             background-color: var(--bg);
             color: var(--text);
             margin: 0;
-            padding: 20px;
+            padding: env(safe-area-inset-top) 20px 20px 20px;
             display: flex;
             justify-content: center;
         }
-        .container {
-            width: 100%;
-            max-width: 600px;
-        }
-        h2 {
-            text-align: center;
-            color: var(--primary);
-        }
+        .container { width: 100%; max-width: 600px; }
+        h2 { text-align: center; color: var(--primary); margin: 20px 0; }
         .card {
             background: var(--card-bg);
             padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border-radius: 16px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
             margin-bottom: 20px;
         }
         .stat-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 10px 0;
-            border-bottom: 1px solid #eee;
+            padding: 12px 0;
+            border-bottom: 1px solid #f0f0f0;
         }
-        .stat-row:last-child {
-            border-bottom: none;
-        }
-        .stat-label {
-            font-weight: bold;
-            color: #555;
-        }
-        .stat-value {
-            font-size: 1.1em;
-            font-weight: bold;
-        }
+        .stat-row:last-child { border-bottom: none; }
+        .stat-label { font-weight: bold; color: #666; font-size: 0.9em; }
+        .stat-value { font-size: 1.1em; font-weight: bold; }
         .highlight { color: var(--primary); font-size: 1.3em; }
         .success { color: var(--success); }
         .danger { color: var(--danger); }
-        .warning { color: var(--warning); }
         
-        .input-group {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            margin-top: 15px;
-        }
-        label { font-size: 0.9em; color: #666; margin-bottom: -5px; }
-        input[type="text"], input[type="number"], input[type="month"] {
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
+        .input-group { display: flex; flex-direction: column; gap: 12px; margin-top: 15px; }
+        label { font-size: 0.85em; color: #888; margin-bottom: -8px; padding-left: 5px; }
+        input {
+            padding: 14px;
+            border: 1px solid #eee;
+            border-radius: 10px;
             font-size: 1em;
+            background-color: #fcfcfc;
             width: 100%;
             box-sizing: border-box;
-            font-family: inherit;
+            -webkit-appearance: none;
         }
-        .btn-group {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-top: 5px;
-        }
+        .btn-group { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 5px; }
         button {
-            padding: 12px;
+            padding: 15px;
             border: none;
-            border-radius: 8px;
+            border-radius: 12px;
             font-size: 1em;
             font-weight: bold;
             cursor: pointer;
-            transition: opacity 0.2s;
+            transition: transform 0.1s;
         }
-        button:hover { opacity: 0.8; }
+        button:active { transform: scale(0.98); }
         .btn-plus { background-color: var(--primary); color: white; }
-        .btn-minus { background-color: var(--danger); color: white; }
+        .btn-minus { background-color: #fdeaea; color: var(--danger); }
         
-        .history-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            max-height: 250px;
-            overflow-y: auto;
-        }
+        .history-list { list-style: none; padding: 0; margin: 0; max-height: 300px; overflow-y: auto; }
         .history-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: #f8f9fa;
-            padding: 12px;
-            border-radius: 6px;
-            margin-bottom: 8px;
-            font-size: 0.95em;
+            background: #fbfbfb;
+            padding: 14px;
+            border-radius: 10px;
+            margin-bottom: 10px;
         }
         .month-badge {
-            background-color: #e1effe;
+            background-color: #eef5ff;
             color: var(--primary);
             padding: 4px 8px;
-            border-radius: 4px;
+            border-radius: 6px;
             font-weight: bold;
-            font-size: 0.85em;
-            margin-right: 10px;
+            font-size: 0.8em;
+            margin-right: 12px;
         }
-        .amount-text { font-weight: bold; }
-        .amount-minus { color: var(--danger); }
-        .amount-plus { color: var(--primary); }
+        .amount-plus { color: var(--primary); font-weight: bold; }
+        .amount-minus { color: var(--danger); font-weight: bold; }
         
-        .delete-btn {
-            background: none;
-            color: #999;
-            border: none;
-            padding: 5px;
-            cursor: pointer;
-            font-size: 0.85em;
-        }
-        .delete-btn:hover { color: var(--danger); text-decoration: underline; }
-        
-        /* Progress bar */
         .progress-container {
             width: 100%;
             background-color: #eee;
-            border-radius: 8px;
-            height: 20px;
+            border-radius: 10px;
+            height: 12px;
             margin-top: 15px;
             overflow: hidden;
         }
-        .progress-bar {
-            height: 100%;
-            background-color: var(--primary);
-            width: 0%;
-            transition: width 0.5s ease-in-out;
-        }
+        .progress-bar { height: 100%; background-color: var(--primary); width: 0%; transition: width 0.6s ease; }
+        .delete-btn { background: none; color: #ccc; font-size: 0.8em; padding: 5px; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>입주 자금 마련 트래커</h2>
+    <h2>🏠 미래도 자금 트래커</h2>
     
     <div class="card">
         <div class="stat-row">
-            <span class="stat-label">고정 목표 금액</span>
+            <span class="stat-label">목표 금액</span>
             <span class="stat-value">120,155,979 원</span>
         </div>
         <div class="stat-row">
-            <span class="stat-label">현재 보유 금액 (초기자본)</span>
-            <div style="width:40%;">
-                <input type="number" id="baseAmount" value="50000000" onchange="saveData()" style="text-align:right;">
-            </div>
-        </div>
-        <div class="stat-row">
-            <span class="stat-label">순수 저축 합계</span>
-            <span class="stat-value" id="totalSavedStr">0 원</span>
+            <span class="stat-label">현재 보유 자산</span>
+            <div style="width:50%;"><input type="number" id="baseAmount" value="50000000" onchange="saveData()" style="text-align:right; border:none; background:none; font-weight:bold; font-size:1.1em; padding:0;"></div>
         </div>
         <div class="stat-row">
             <span class="stat-label">남은 필요 잔액</span>
             <span class="stat-value highlight" id="remainingStr">0 원</span>
         </div>
-        
-        <div class="progress-container">
-            <div class="progress-bar" id="progressBar"></div>
-        </div>
-        <div style="text-align: right; font-size: 0.8em; color: #666; margin-top: 5px;">
-            달성률: <span id="percentStr">0</span>%
-        </div>
+        <div class="progress-container"><div class="progress-bar" id="progressBar"></div></div>
+        <div style="text-align: right; font-size: 0.8em; color: #999; margin-top: 8px;">달성률: <span id="percentStr">0</span>%</div>
     </div>
 
-    <div class="card" style="background-color: #f0f7ff; border: 1px solid #cce0ff;">
-        <h3 style="margin-top:0; color:#333;">📊 현황 분석 및 예측</h3>
-        <p style="font-size: 0.85em; color: #666; margin-bottom: 10px;">
-            목표 기간: 27개월 (26년 5월 ~ 28년 7월)
-            <br>데이터 입력: <strong id="recordedMonths">0</strong>개월 완료
-        </p>
-        <div class="stat-row">
+    <div class="card" style="background: linear-gradient(135deg, #e0eeff 0%, #f0f7ff 100%); border:none;">
+        <h3 style="margin-top:0; font-size:1em;">📊 입주 페이스 분석</h3>
+        <div class="stat-row" style="border-bottom-color: rgba(0,0,0,0.05);">
             <span class="stat-label">월 평균 순 저축액</span>
             <span class="stat-value" id="avgSavedStr">0 원</span>
         </div>
-        <div class="stat-row">
-            <span class="stat-label">입주 시점 예상 결과</span>
+        <div class="stat-row" style="border:none;">
+            <span class="stat-label">예상 결과</span>
             <span class="stat-value" id="predictionResult">-</span>
         </div>
     </div>
 
     <div class="card">
-        <h3 style="margin-top:0;">💰 금액 기록 (저축/지출)</h3>
         <div class="input-group">
-            <label>해당 월 선택</label>
+            <label>해당 월</label>
             <input type="month" id="saveMonth">
-            
-            <label>금액 입력 (원)</label>
-            <input type="number" id="saveAmount" placeholder="숫자만 입력">
-            
-            <label>내용 메모</label>
-            <input type="text" id="saveMemo" placeholder="예: 5월 월급 저축 / 병원비 지출">
-            
+            <label>금액</label>
+            <input type="number" id="saveAmount" placeholder="금액 입력">
+            <label>메모</label>
+            <input type="text" id="saveMemo" placeholder="내용 (선택)">
             <div class="btn-group">
-                <button class="btn-plus" onclick="addRecord(1)">+ 저축하기</button>
-                <button class="btn-minus" onclick="addRecord(-1)">- 지출하기</button>
+                <button class="btn-plus" onclick="addRecord(1)">+ 저축</button>
+                <button class="btn-minus" onclick="addRecord(-1)">- 지출</button>
             </div>
         </div>
     </div>
 
     <div class="card">
-        <h3 style="margin-top:0;">📝 전체 내역</h3>
-        <ul class="history-list" id="historyList">
-            </ul>
+        <h3 style="margin-top:0; font-size:1em;">📝 내역 확인</h3>
+        <ul class="history-list" id="historyList"></ul>
     </div>
 </div>
 
 <script>
     const TARGET_AMOUNT = 120155979;
-    const TOTAL_MONTHS = 27;
-    
+    const TOTAL_MONTHS = 27; // 26.05 ~ 28.07
     let baseAmount = 50000000;
     let records = [];
 
     window.onload = function() {
         const savedBase = localStorage.getItem('tracker_baseAmount');
         const savedRecords = localStorage.getItem('tracker_records');
+        if (savedBase !== null) { baseAmount = parseInt(savedBase); document.getElementById('baseAmount').value = baseAmount; }
+        if (savedRecords !== null) { records = JSON.parse(savedRecords); }
         
-        if (savedBase !== null) {
-            baseAmount = parseInt(savedBase);
-            document.getElementById('baseAmount').value = baseAmount;
-        }
-        if (savedRecords !== null) {
-            records = JSON.parse(savedRecords);
-        }
-
         const today = new Date();
-        const yyyy = today.getFullYear();
-        const mm = String(today.getMonth() + 1).padStart(2, '0');
-        document.getElementById('saveMonth').value = `${yyyy}-${mm}`;
-
+        document.getElementById('saveMonth').value = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}`;
         updateUI();
     };
 
     function addRecord(type) {
-        const monthInput = document.getElementById('saveMonth').value;
+        const month = document.getElementById('saveMonth').value;
         const amountInput = document.getElementById('saveAmount');
-        const memoInput = document.getElementById('saveMemo');
-        
-        if (!monthInput) { alert("월을 선택해주세요."); return; }
-        
         let amount = parseInt(amountInput.value);
-        if (isNaN(amount) || amount <= 0) { alert("올바른 금액을 입력해주세요."); return; }
-
-        // 지출이면 마이너스로 변환
+        if (!month || isNaN(amount) || amount <= 0) { alert("항목을 확인해주세요."); return; }
         if (type === -1) amount = -amount;
-
-        const memo = memoInput.value.trim() || (type === 1 ? '추가 저축' : '예외 지출');
-
-        records.push({ 
-            id: Date.now(), 
-            month: monthInput, 
-            amount: amount, 
-            memo: memo 
-        });
         
-        amountInput.value = '';
-        memoInput.value = '';
+        records.push({ id: Date.now(), month, amount, memo: document.getElementById('saveMemo').value || (type === 1 ? '추가 저축' : '예외 지출') });
+        amountInput.value = ''; document.getElementById('saveMemo').value = '';
         saveData();
     }
 
-    function deleteRecord(id) {
-        if(confirm("이 내역을 삭제하시겠습니까?")) {
-            records = records.filter(record => record.id !== id);
-            saveData();
-        }
-    }
+    function deleteRecord(id) { if(confirm("삭제할까요?")) { records = records.filter(r => r.id !== id); saveData(); } }
 
     function saveData() {
         baseAmount = parseInt(document.getElementById('baseAmount').value) || 0;
@@ -297,69 +206,38 @@
     }
 
     function updateUI() {
-        const totalSaved = records.reduce((sum, record) => sum + record.amount, 0);
+        const totalSaved = records.reduce((sum, r) => sum + r.amount, 0);
         const currentTotal = baseAmount + totalSaved;
-        const remaining = TARGET_AMOUNT - currentTotal;
+        const remaining = Math.max(0, TARGET_AMOUNT - currentTotal);
         
-        document.getElementById('totalSavedStr').textContent = totalSaved.toLocaleString() + " 원";
-        document.getElementById('remainingStr').textContent = (remaining > 0 ? remaining.toLocaleString() : "0") + " 원";
-        
-        let percent = (currentTotal / TARGET_AMOUNT) * 100;
-        if (percent > 100) percent = 100;
+        document.getElementById('remainingStr').textContent = remaining.toLocaleString() + " 원";
+        let percent = Math.min(100, (currentTotal / TARGET_AMOUNT) * 100);
         document.getElementById('progressBar').style.width = percent + "%";
         document.getElementById('percentStr').textContent = percent.toFixed(1);
 
-        // 월 단위 계산
-        const uniqueMonthsSet = new Set(records.map(r => r.month));
-        const uniqueMonthsCount = uniqueMonthsSet.size;
-        document.getElementById('recordedMonths').textContent = uniqueMonthsCount;
-        
+        const uniqueMonthsCount = new Set(records.map(r => r.month)).size;
         if (uniqueMonthsCount > 0) {
             const avgSaved = totalSaved / uniqueMonthsCount;
             document.getElementById('avgSavedStr').textContent = Math.round(avgSaved).toLocaleString() + " 원";
-            
-            const remainingMonths = Math.max(0, TOTAL_MONTHS - uniqueMonthsCount);
-            const projectedTotal = currentTotal + (avgSaved * remainingMonths);
-            const difference = projectedTotal - TARGET_AMOUNT;
-            
-            const resultEl = document.getElementById('predictionResult');
-            if (currentTotal >= TARGET_AMOUNT) {
-                resultEl.innerHTML = `<strong class="success">목표 조기 달성! 🎉</strong>`;
-            } else if (remainingMonths <= 0) {
-                resultEl.innerHTML = `<strong class="danger">목표 미달 (${Math.abs(difference).toLocaleString()} 원 부족)</strong>`;
-            } else if (difference >= 0) {
-                resultEl.innerHTML = `<strong class="success">${Math.round(difference).toLocaleString()} 원 초과 달성 예상 👏</strong>`;
-            } else {
-                resultEl.innerHTML = `<strong class="danger">${Math.round(Math.abs(difference)).toLocaleString()} 원 부족 예상 🚨</strong>`;
-            }
-        } else {
-            document.getElementById('avgSavedStr').textContent = "0 원";
-            document.getElementById('predictionResult').innerHTML = `<span style="color:#666;">기록을 시작해주세요.</span>`;
+            const diff = (currentTotal + (avgSaved * Math.max(0, TOTAL_MONTHS - uniqueMonthsCount))) - TARGET_AMOUNT;
+            document.getElementById('predictionResult').innerHTML = diff >= 0 
+                ? `<span class="success">정상 페이스 (약 ${Math.round(diff/10000)}만 원 초과)</span>`
+                : `<span class="danger">보충 필요 (약 ${Math.round(Math.abs(diff)/10000)}만 원 부족)</span>`;
         }
 
         const listEl = document.getElementById('historyList');
         listEl.innerHTML = '';
-        
-        [...records].sort((a,b) => b.id - a.id).forEach(record => {
+        [...records].sort((a,b) => b.id - a.id).forEach(r => {
             const li = document.createElement('li');
             li.className = 'history-item';
-            const amountClass = record.amount < 0 ? 'amount-minus' : 'amount-plus';
-            const amountPrefix = record.amount < 0 ? '' : '+';
-
             li.innerHTML = `
-                <div style="display: flex; align-items: center;">
-                    <span class="month-badge">${record.month}</span>
-                    <div>
-                        <span class="amount-text ${amountClass}">${amountPrefix}${record.amount.toLocaleString()} 원</span>
-                        <div style="color:#888; font-size:0.85em; margin-top:2px;">${record.memo}</div>
-                    </div>
-                </div>
-                <button class="delete-btn" onclick="deleteRecord(${record.id})">삭제</button>
-            `;
+                <div style="display:flex; align-items:center;"><span class="month-badge">${r.month}</span>
+                <div><span class="${r.amount < 0 ? 'amount-minus' : 'amount-plus'}">${r.amount.toLocaleString()}원</span>
+                <div style="color:#aaa; font-size:0.8em;">${r.memo}</div></div></div>
+                <button class="delete-btn" onclick="deleteRecord(${r.id})">삭제</button>`;
             listEl.appendChild(li);
         });
     }
 </script>
-
 </body>
 </html>
