@@ -15,10 +15,7 @@
         tailwind.config = {
             theme: {
                 extend: {
-                    colors: {
-                        "primary": "#005ac1", "on-primary": "#ffffff", "secondary": "#535f70",
-                        "surface": "#f8f9ff", "on-surface": "#191c20", "surface-container": "#f0f0f7"
-                    },
+                    colors: { "primary": "#005ac1", "secondary": "#535f70", "surface": "#f8f9ff", "on-surface": "#191c20" },
                     borderRadius: { '3xl': '24px', '4xl': '32px' }
                 }
             }
@@ -28,8 +25,8 @@
         body { font-family: 'Pretendard', sans-serif; background-color: #f8f9ff; -webkit-tap-highlight-color: transparent; }
         .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
         ::-webkit-scrollbar { display: none; }
-        input[type="month"], input[type="text"] { border: none; background: #f0f0f7; border-radius: 14px; font-size: 16px !important; }
-        input:focus { ring: 2px; ring-color: #005ac1; outline: none; }
+        input, select { border: none !important; background: #f0f0f7 !important; border-radius: 14px !important; font-size: 16px !important; }
+        input:focus, select:focus { ring: 2px !important; ring-color: #005ac1 !important; outline: none !important; }
     </style>
 </head>
 
@@ -37,92 +34,43 @@
     <header class="flex justify-between items-center mb-8 px-2">
         <div>
             <h1 class="text-2xl font-extrabold text-on-surface tracking-tight">입주 자금 관리</h1>
-            <p id="syncStatus" class="text-[12px] text-gray-500 flex items-center gap-1 mt-1">
-                <span class="material-symbols-outlined text-[14px]">sync</span> 동기화 중...
-            </p>
+            <p id="syncStatus" class="text-[12px] text-gray-500 flex items-center gap-1 mt-1"><span class="material-symbols-outlined text-[14px]">sync</span> 동기화 중...</p>
         </div>
-        <div class="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-primary">
-            <span class="material-symbols-outlined">favorite</span>
-        </div>
+        <div class="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-primary"><span class="material-symbols-outlined">favorite</span></div>
     </header>
 
     <section class="bg-primary text-on-primary p-7 rounded-4xl shadow-2xl shadow-blue-200/50 mb-6">
         <p class="text-xs opacity-70 mb-1 font-medium">목표까지 남은 잔액</p>
         <h2 id="remainingStr" class="text-3xl font-bold mb-8">₩ 0</h2>
-        
         <div class="space-y-6">
             <div>
-                <div class="flex justify-between text-[11px] mb-2 font-bold opacity-90 tracking-wider">
-                    <span>GOAL ₩ 120,155,979</span>
-                    <span id="percentStr">0%</span>
-                </div>
-                <div class="w-full bg-white/20 h-2.5 rounded-full overflow-hidden">
-                    <div id="progressBar" class="bg-white h-full transition-all duration-1000" style="width: 0%"></div>
-                </div>
+                <div class="flex justify-between text-[11px] mb-2 font-bold opacity-90 tracking-wider"><span>GOAL ₩ 120,155,979</span><span id="percentStr">0%</span></div>
+                <div class="w-full bg-white/20 h-2.5 rounded-full overflow-hidden"><div id="progressBar" class="bg-white h-full transition-all duration-1000" style="width: 0%"></div></div>
             </div>
-            
             <div class="grid grid-cols-3 gap-2 pt-4 border-t border-white/10">
-                <div class="text-center">
-                    <p class="text-[10px] opacity-70 mb-1">자원 보유</p>
-                    <div class="flex items-center justify-center gap-0.5">
-                        <span class="text-[10px] font-bold">₩</span>
-                        <input type="text" id="baseJawon" oninput="formatInput(this); triggerSave();" 
-                               class="!bg-transparent text-white font-bold p-0 w-full text-center border-none focus:ring-0 focus:outline-none appearance-none text-xs" value="25,000,000" style="background-color: transparent !important; -webkit-appearance: none;">
-                    </div>
-                </div>
-                <div class="text-center">
-                    <p class="text-[10px] opacity-70 mb-1">예인 보유</p>
-                    <div class="flex items-center justify-center gap-0.5">
-                        <span class="text-[10px] font-bold">₩</span>
-                        <input type="text" id="baseYein" oninput="formatInput(this); triggerSave();" 
-                               class="!bg-transparent text-white font-bold p-0 w-full text-center border-none focus:ring-0 focus:outline-none appearance-none text-xs" value="25,000,000" style="background-color: transparent !important; -webkit-appearance: none;">
-                    </div>
-                </div>
-                <div class="text-center border-l border-white/10">
-                    <p class="text-[10px] opacity-100 font-bold mb-1">총합 자산</p>
-                    <p id="totalAssetsStr" class="text-xs font-black">₩ 0</p>
-                </div>
+                <div class="text-center"><p class="text-[10px] opacity-70 mb-1">자원 초기</p><input type="text" id="baseJawon" oninput="formatInput(this); triggerSave();" class="!bg-transparent text-white font-bold p-0 w-full text-center border-none focus:ring-0 appearance-none text-xs" value="25,000,000" style="background-color: transparent !important;"></div>
+                <div class="text-center"><p class="text-[10px] opacity-70 mb-1">예인 초기</p><input type="text" id="baseYein" oninput="formatInput(this); triggerSave();" class="!bg-transparent text-white font-bold p-0 w-full text-center border-none focus:ring-0 appearance-none text-xs" value="25,000,000" style="background-color: transparent !important;"></div>
+                <div class="text-center border-l border-white/10"><p class="text-[10px] font-bold mb-1">총합 자산</p><p id="totalAssetsStr" class="text-xs font-black">₩ 0</p></div>
             </div>
         </div>
     </section>
 
-    <section class="bg-white border border-blue-50/50 p-6 rounded-3xl mb-6 shadow-sm">
-        <div class="flex items-center gap-2 mb-5">
-            <div class="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center"><span class="material-symbols-outlined text-primary text-[20px]">analytics</span></div>
-            <h3 class="font-bold text-on-surface">페이스 분석</h3>
-        </div>
-        <div class="grid grid-cols-2 gap-4">
-            <div class="bg-slate-50 p-4 rounded-2xl">
-                <p class="text-[10px] text-secondary font-bold uppercase mb-1">월 평균 저축</p>
-                <p id="avgSavedStr" class="font-bold text-on-surface">₩ 0</p>
-            </div>
-            <div id="predictionCard" class="bg-slate-50 p-4 rounded-2xl transition-all">
-                <p class="text-[10px] text-secondary font-bold uppercase mb-1">예상 결과</p>
-                <p id="predictionResult" class="font-bold text-sm">계산 중...</p>
-            </div>
-        </div>
+    <section class="bg-white border border-blue-50/50 p-6 rounded-3xl mb-6 shadow-sm grid grid-cols-2 gap-4">
+        <div class="bg-slate-50 p-4 rounded-2xl"><p class="text-[10px] text-secondary font-bold uppercase mb-1">월 평균 저축</p><p id="avgSavedStr" class="font-bold text-on-surface">₩ 0</p></div>
+        <div id="predictionCard" class="bg-slate-50 p-4 rounded-2xl"><p class="text-[10px] text-secondary font-bold uppercase mb-1">예상 결과</p><p id="predictionResult" class="font-bold text-sm">계산 중...</p></div>
     </section>
 
     <section class="bg-white border border-blue-50/50 p-6 rounded-3xl mb-8 shadow-sm">
-        <div class="flex items-center gap-2 mb-6">
-            <div class="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center"><span class="material-symbols-outlined text-primary text-[20px]">add_task</span></div>
-            <h3 class="font-bold text-on-surface">내역 추가</h3>
-        </div>
+        <div class="flex items-center gap-2 mb-6"><div class="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center"><span class="material-symbols-outlined text-primary text-[20px]">add_task</span></div><h3 class="font-bold text-on-surface">내역 추가</h3></div>
         <div class="space-y-4">
             <div class="grid grid-cols-12 gap-3">
-                <div class="col-span-5">
-                    <label class="text-[10px] text-secondary font-bold ml-1 mb-1 block">연도-월</label>
-                    <input type="month" id="saveMonth" class="w-full text-sm py-3.5 px-3">
+                <div class="col-span-4"><label class="text-[10px] text-secondary font-bold ml-1 mb-1 block">작성자</label>
+                    <select id="savePerson" class="w-full text-sm py-3 px-2"><option value="자원">자원</option><option value="예인">예인</option></select>
                 </div>
-                <div class="col-span-7">
-                    <label class="text-[10px] text-secondary font-bold ml-1 mb-1 block">금액</label>
-                    <input type="text" id="saveAmount" oninput="formatInput(this)" placeholder="0" class="w-full text-sm py-3.5 px-4 text-right font-bold">
-                </div>
+                <div class="col-span-8"><label class="text-[10px] text-secondary font-bold ml-1 mb-1 block">연도-월</label><input type="month" id="saveMonth" class="w-full text-sm py-3 px-3"></div>
             </div>
-            <div>
-                <label class="text-[10px] text-secondary font-bold ml-1 mb-1 block">메모</label>
-                <input type="text" id="saveMemo" placeholder="누가 저축했는지 적어보세요" class="w-full text-sm py-3.5 px-4">
-            </div>
+            <div><label class="text-[10px] text-secondary font-bold ml-1 mb-1 block">금액</label><input type="text" id="saveAmount" oninput="formatInput(this)" placeholder="0" class="w-full text-sm py-3.5 px-4 text-right font-bold"></div>
+            <div><label class="text-[10px] text-secondary font-bold ml-1 mb-1 block">메모</label><input type="text" id="saveMemo" placeholder="내용을 입력하세요" class="w-full text-sm py-3.5 px-4"></div>
             <div class="flex gap-3 pt-2">
                 <button onclick="addRecord(1)" class="flex-[2] bg-primary text-white font-bold py-4 rounded-2xl active:scale-95 transition-transform shadow-lg shadow-blue-100">저축</button>
                 <button onclick="addRecord(-1)" class="flex-1 bg-slate-100 text-secondary font-bold py-4 rounded-2xl active:scale-95 transition-transform">지출</button>
@@ -133,113 +81,73 @@
     <div id="historyList" class="space-y-3"></div>
 
     <script>
-        const GAS_URL = "https://script.google.com/macros/s/AKfycbwzAqYUAW9aqaLj1l1ibcZa57hhzpLpLOEEODTmgDlLVPhc5366AsoaPjaR7u2VYR4Z/exec"; 
+        const GAS_URL = "https://script.google.com/macros/s/AKfycbzMnN0TuWoyh4ibVMftW0lG9vqxB3BgeCYBYy8xDS8vYQPGo-VXNlkT_EpE_JDQVKtd/exec"; 
         const TARGET_AMOUNT = 120155979;
         const TOTAL_MONTHS = 27;
-        
-        let baseJawon = 25000000;
-        let baseYein = 25000000;
-        let records = [];
+        let baseJawon = 25000000; let baseYein = 25000000; let records = [];
 
         function formatInput(el) {
             let val = el.value.replace(/[^0-9]/g, "");
-            if (val.length > 0) el.value = parseInt(val).toLocaleString();
-            else el.value = "";
+            if (val.length > 0) el.value = parseInt(val).toLocaleString(); else el.value = "";
         }
-
-        function getRawValue(elId) {
-            return parseInt(document.getElementById(elId).value.replace(/,/g, "")) || 0;
-        }
+        function getRawValue(id) { return parseInt(document.getElementById(id).value.replace(/,/g, "")) || 0; }
 
         window.onload = async function() {
             const today = new Date();
             document.getElementById('saveMonth').value = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}`;
-            
             try {
                 const response = await fetch(GAS_URL);
                 const data = await response.json();
-                
-                // 구글 시트에서 자산 데이터를 자원/예인으로 나누어 저장하지 않았다면 5:5로 초기화
-                // (이후 한 번 저장하면 값이 고정됩니다)
-                if(data.baseJawon) {
-                    baseJawon = data.baseJawon;
-                    baseYein = data.baseYein;
-                } else {
-                    baseJawon = data.baseAmount / 2;
-                    baseYein = data.baseAmount / 2;
-                }
-                
-                records = data.records;
+                baseJawon = data.baseJawon || 25000000; baseYein = data.baseYein || 25000000; records = data.records || [];
                 document.getElementById('baseJawon').value = baseJawon.toLocaleString();
                 document.getElementById('baseYein').value = baseYein.toLocaleString();
-                document.getElementById('syncStatus').innerHTML = '<span class="material-symbols-outlined text-[14px] text-green-500">cloud_done</span> 실시간 동기화 완료';
+                document.getElementById('syncStatus').innerHTML = '✅ 동기화 완료';
                 updateUI();
-            } catch (error) {
-                document.getElementById('syncStatus').innerHTML = '<span class="material-symbols-outlined text-[14px] text-red-400">cloud_off</span> 오프라인';
-            }
+            } catch (e) { document.getElementById('syncStatus').innerHTML = '⚠️ 오프라인'; }
         };
 
         async function triggerSave() {
-            document.getElementById('syncStatus').innerHTML = '<span class="material-symbols-outlined text-[14px] animate-spin">sync</span> 서버 저장 중...';
-            baseJawon = getRawValue('baseJawon');
-            baseYein = getRawValue('baseYein');
+            document.getElementById('syncStatus').innerHTML = '🔄 저장 중...';
+            baseJawon = getRawValue('baseJawon'); baseYein = getRawValue('baseYein');
             updateUI();
-            
             try {
-                // 구글 시트 앱스 스크립트의 doPost도 baseJawon, baseYein을 받도록 수정이 필요할 수 있으나, 
-                // 일단 호환성을 위해 baseAmount로 합쳐서 보내거나 추가 필드로 전송
-                await fetch(GAS_URL, { 
-                    method: 'POST', 
-                    body: JSON.stringify({ baseJawon, baseYein, baseAmount: baseJawon + baseYein, records }), 
-                    headers: { 'Content-Type': 'text/plain;charset=utf-8' } 
-                });
-                document.getElementById('syncStatus').innerHTML = '<span class="material-symbols-outlined text-[14px] text-green-500">cloud_done</span> 저장 완료';
+                await fetch(GAS_URL, { method: 'POST', body: JSON.stringify({ baseJawon, baseYein, records }), headers: { 'Content-Type': 'text/plain' } });
+                document.getElementById('syncStatus').innerHTML = '✅ 저장 완료';
             } catch (e) { document.getElementById('syncStatus').innerHTML = '⚠️ 실패'; }
         }
 
         function addRecord(type) {
+            const person = document.getElementById('savePerson').value;
             const month = document.getElementById('saveMonth').value;
             let amount = getRawValue('saveAmount');
             if (!month || amount <= 0) return;
             if (type === -1) amount = -amount;
-            records.push({ id: Date.now(), month, amount, memo: document.getElementById('saveMemo').value || (type === 1 ? '정기 저축' : '예외 지출') });
-            document.getElementById('saveAmount').value = ''; 
-            document.getElementById('saveMemo').value = '';
+            records.push({ id: Date.now(), month, amount, person, memo: document.getElementById('saveMemo').value || (type === 1 ? '저축' : '지출') });
+            document.getElementById('saveAmount').value = ''; document.getElementById('saveMemo').value = '';
             triggerSave();
         }
 
         function deleteRecord(id) { if(confirm("삭제할까요?")) { records = records.filter(r => r.id !== id); triggerSave(); } }
 
-        function getSafeMonthDisplay(m) { return (m && typeof m === 'string' && m.includes('-')) ? m.substring(0, 7) : m; }
-
         function updateUI() {
             const totalSaved = records.reduce((sum, r) => sum + parseInt(r.amount), 0);
+            const currentTotal = getRawValue('baseJawon') + getRawValue('baseYein') + totalSaved;
+            const remaining = Math.max(0, TARGET_AMOUNT - currentTotal);
             
-            // 핵심 로직: 현재 총 자산 = (자원 초기 + 예인 초기) + 저축 누적액
-            const currentTotalAssets = getRawValue('baseJawon') + getRawValue('baseYein') + totalSaved;
-            const remaining = Math.max(0, TARGET_AMOUNT - currentTotalAssets);
-            
-            document.getElementById('totalAssetsStr').textContent = `₩ ${currentTotalAssets.toLocaleString()}`;
+            document.getElementById('totalAssetsStr').textContent = `₩ ${currentTotal.toLocaleString()}`;
             document.getElementById('remainingStr').textContent = `₩ ${remaining.toLocaleString()}`;
-            
-            let percent = Math.min(100, (currentTotalAssets / TARGET_AMOUNT) * 100);
+            let percent = Math.min(100, (currentTotal / TARGET_AMOUNT) * 100);
             document.getElementById('progressBar').style.width = percent + "%";
             document.getElementById('percentStr').textContent = `${percent.toFixed(1)}%`;
 
-            const uniqueMonths = new Set(records.map(r => getSafeMonthDisplay(r.month))).size;
+            const uniqueMonths = new Set(records.map(r => String(r.month).substring(0,7))).size;
             if (uniqueMonths > 0) {
                 const avg = totalSaved / uniqueMonths;
                 document.getElementById('avgSavedStr').textContent = `₩ ${Math.round(avg).toLocaleString()}`;
-                const diff = (currentTotalAssets + (avg * Math.max(0, TOTAL_MONTHS - uniqueMonths))) - TARGET_AMOUNT;
+                const diff = (currentTotal + (avg * Math.max(0, TOTAL_MONTHS - uniqueMonths))) - TARGET_AMOUNT;
                 const pEl = document.getElementById('predictionResult');
-                const pCard = document.getElementById('predictionCard');
-                if (diff >= 0) { 
-                    pEl.innerHTML = `<span class="text-primary font-bold">+ ₩ ${Math.round(diff/10000).toLocaleString()}만</span>`; 
-                    pCard.style.backgroundColor = "#eff6ff"; 
-                } else { 
-                    pEl.innerHTML = `<span class="text-red-500 font-bold">- ₩ ${Math.round(Math.abs(diff)/10000).toLocaleString()}만</span>`; 
-                    pCard.style.backgroundColor = "#fff1f2"; 
-                }
+                if (diff >= 0) { pEl.innerHTML = `<span class="text-primary">+ ₩ ${Math.round(diff/10000).toLocaleString()}만</span>`; document.getElementById('predictionCard').style.backgroundColor = "#eff6ff"; }
+                else { pEl.innerHTML = `<span class="text-red-500">- ₩ ${Math.round(Math.abs(diff)/10000).toLocaleString()}만</span>`; document.getElementById('predictionCard').style.backgroundColor = "#fff1f2"; }
             }
 
             const listEl = document.getElementById('historyList'); listEl.innerHTML = '';
@@ -247,7 +155,20 @@
                 const isEx = r.amount < 0;
                 const item = document.createElement('div');
                 item.className = "bg-white p-4 rounded-2xl border border-gray-100 flex items-center justify-between shadow-sm";
-                item.innerHTML = `<div class="flex items-center gap-3"><div class="w-10 h-10 rounded-full flex items-center justify-center ${isEx ? 'bg-red-50 text-red-500' : 'bg-blue-50 text-primary'}"><span class="material-symbols-outlined text-[20px]">${isEx ? 'shopping_bag' : 'payments'}</span></div><div><p class="font-bold text-on-surface text-[13px]">${r.memo}</p><p class="text-[10px] text-secondary font-medium">${getSafeMonthDisplay(r.month)} • ${isEx ? '지출' : '저축'}</p></div></div><div class="text-right flex items-center gap-4"><p class="font-bold text-[14px] ${isEx ? 'text-red-500' : 'text-primary'}">${isEx ? '-' : '+'} ₩ ${Math.abs(r.amount).toLocaleString()}</p><button onclick="deleteRecord(${r.id})" class="material-symbols-outlined text-gray-300 text-[18px] active:text-red-400">delete</button></div>`;
+                item.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full flex items-center justify-center ${isEx ? 'bg-red-50 text-red-500' : 'bg-blue-50 text-primary'}">
+                            <span class="text-[10px] font-bold">${r.person || '??'}</span>
+                        </div>
+                        <div>
+                            <p class="font-bold text-on-surface text-[13px]">${r.memo}</p>
+                            <p class="text-[10px] text-secondary font-medium">${String(r.month).substring(0,7)} • ${isEx ? '지출' : '저축'}</p>
+                        </div>
+                    </div>
+                    <div class="text-right flex items-center gap-4">
+                        <p class="font-bold text-[14px] ${isEx ? 'text-red-500' : 'text-primary'}">${isEx ? '-' : '+'} ₩ ${Math.abs(r.amount).toLocaleString()}</p>
+                        <button onclick="deleteRecord(${r.id})" class="material-symbols-outlined text-gray-300 text-[18px]">delete</button>
+                    </div>`;
                 listEl.appendChild(item);
             });
         }
