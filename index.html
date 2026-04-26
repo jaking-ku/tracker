@@ -9,7 +9,6 @@
     <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/25/25694.png">
     <title>커플 입주 자금 트래커</title>
     <style>
-        /* 기존과 동일한 스타일 */
         :root { --primary: #4A90E2; --success: #2ecc71; --danger: #e74c3c; --bg: #f5f7fa; --card-bg: #ffffff; --text: #333333; }
         body { font-family: 'Pretendard', sans-serif; background-color: var(--bg); color: var(--text); margin: 0; padding: env(safe-area-inset-top) 20px 20px 20px; display: flex; justify-content: center; }
         .container { width: 100%; max-width: 600px; }
@@ -78,15 +77,14 @@
 </div>
 
 <script>
-    // ★★★ 여기에 복사한 구글 스크립트 웹 앱 URL을 붙여넣으세요! ★★★
-    const GAS_URL = "https://script.google.com/macros/s/AKfycbwzAqYUAW9aqaLj1l1ibcZa57hhzpLpLOEEODTmgDlLVPhc5366AsoaPjaR7u2VYR4Z/exec"; 
+    // ★★★ 아래 쌍따옴표 안에 구글 스크립트 웹 앱 URL을 다시 붙여넣으세요! ★★★
+    const GAS_URL = "여기에_웹앱_주소를_넣으세요"; 
 
     const TARGET_AMOUNT = 120155979;
     const TOTAL_MONTHS = 27;
     let baseAmount = 50000000;
     let records = [];
 
-    // 앱 실행 시 구글 시트에서 데이터 불러오기
     window.onload = async function() {
         const today = new Date();
         document.getElementById('saveMonth').value = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}`;
@@ -101,7 +99,6 @@
             updateUI();
         } catch (error) {
             document.getElementById('syncStatus').textContent = "⚠️ 로딩 실패 (오프라인/URL확인)";
-            // 실패 시 기존 브라우저 로컬 데이터라도 띄움
             const savedBase = localStorage.getItem('tracker_baseAmount');
             if(savedBase) document.getElementById('baseAmount').value = savedBase;
         }
@@ -121,11 +118,10 @@
 
     function deleteRecord(id) { if(confirm("삭제할까요?")) { records = records.filter(r => r.id !== id); triggerSave(); } }
 
-    // 데이터 저장 후 구글 시트로 전송
     async function triggerSave() {
         document.getElementById('syncStatus').textContent = "🔄 구글 시트 저장 중...";
         baseAmount = parseInt(document.getElementById('baseAmount').value) || 0;
-        updateUI(); // 화면 먼저 업데이트
+        updateUI(); 
         
         const payload = { baseAmount: baseAmount, records: records };
         
@@ -133,7 +129,7 @@
             await fetch(GAS_URL, {
                 method: 'POST',
                 body: JSON.stringify(payload),
-                headers: { 'Content-Type': 'text/plain;charset=utf-8' } // CORS 방지용 텍스트 플레인
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' }
             });
             document.getElementById('syncStatus').textContent = "✅ 저장 완료";
         } catch (e) {
@@ -151,7 +147,16 @@
         document.getElementById('progressBar').style.width = percent + "%";
         document.getElementById('percentStr').textContent = percent.toFixed(1);
 
-        const uniqueMonthsCount = new Set(records.map(r => r.month)).size;
+        // 예측 분석을 위해 고유 월(Month) 개수 계산 시에도 포맷팅 처리
+        const formattedMonths = records.map(r => {
+            if (r.month && r.month.includes('T')) {
+                const d = new Date(r.month);
+                return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+            }
+            return r.month;
+        });
+        const uniqueMonthsCount = new Set(formattedMonths).size;
+
         if (uniqueMonthsCount > 0) {
             const avgSaved = totalSaved / uniqueMonthsCount;
             document.getElementById('avgSavedStr').textContent = Math.round(avgSaved).toLocaleString() + " 원";
@@ -164,10 +169,17 @@
         const listEl = document.getElementById('historyList');
         listEl.innerHTML = '';
         [...records].sort((a,b) => b.id - a.id).forEach(r => {
+            // [버그 수정 구간] 긴 날짜 데이터가 들어오면 YYYY-MM 형식으로 자름
+            let displayMonth = r.month;
+            if (displayMonth && displayMonth.includes('T')) {
+                const dateObj = new Date(displayMonth);
+                displayMonth = `${dateObj.getFullYear()}-${String(dateObj.getMonth() + 1).padStart(2, '0')}`;
+            }
+
             const li = document.createElement('li');
             li.className = 'history-item';
             li.innerHTML = `
-                <div style="display:flex; align-items:center;"><span class="month-badge">${r.month}</span>
+                <div style="display:flex; align-items:center;"><span class="month-badge">${displayMonth}</span>
                 <div><span class="${r.amount < 0 ? 'amount-minus' : 'amount-plus'}">${parseInt(r.amount).toLocaleString()}원</span>
                 <div style="color:#aaa; font-size:0.8em;">${r.memo}</div></div></div>
                 <button class="delete-btn" onclick="deleteRecord(${r.id})">삭제</button>`;
