@@ -126,7 +126,7 @@
         </div>
     </header>
 
-    <!-- 프리미엄 히어로 대시보드 카드 -->
+    <!-- 프리미엄 히어로 대시보드 카드 (현재 자산 완벽 통합) -->
     <section class="hero-gradient text-white p-5 rounded-3xl mb-4 relative overflow-hidden">
         <div class="absolute -right-10 -top-10 w-36 h-36 bg-white/10 rounded-full blur-2xl pointer-events-none"></div>
         <div class="absolute -left-10 -bottom-10 w-36 h-36 bg-blue-400/20 rounded-full blur-2xl pointer-events-none"></div>
@@ -153,35 +153,25 @@
                 </div>
             </div>
 
-            <!-- 자산 분할 지분 요약 -->
+            <!-- 자산 현황 요약 (초기입력 제거 및 실시간 현재 자산으로 통합) -->
             <div class="grid grid-cols-3 gap-1.5 pt-3.5 border-t border-white/15">
-                <div class="text-center bg-white/5 rounded-xl py-1.5 px-1 backdrop-blur-xs">
-                    <p class="text-[9px] text-blue-100/70 font-medium mb-0.5">자원 초기</p>
-                    <div class="flex items-center justify-center gap-0.5">
-                        <span class="text-[9px] font-bold opacity-80">₩</span>
-                        <input type="text" id="baseJawon" oninput="formatInput(this); triggerSave();" 
-                               class="!bg-transparent text-white font-black p-0 w-full text-center border-none focus:ring-0 appearance-none text-[11px]" 
-                               style="background-color: transparent !important; -webkit-appearance: none;">
-                    </div>
+                <div class="text-center bg-white/5 rounded-xl py-2 px-1 backdrop-blur-xs">
+                    <p class="text-[9px] text-blue-100/70 font-medium mb-0.5">자원 현재 자산</p>
+                    <p id="jawonCurrentAssetStr" class="text-[11px] font-black text-white">₩ 0</p>
                 </div>
-                <div class="text-center bg-white/5 rounded-xl py-1.5 px-1 backdrop-blur-xs">
-                    <p class="text-[9px] text-blue-100/70 font-medium mb-0.5">예인 초기</p>
-                    <div class="flex items-center justify-center gap-0.5">
-                        <span class="text-[9px] font-bold opacity-80">₩</span>
-                        <input type="text" id="baseYein" oninput="formatInput(this); triggerSave();" 
-                               class="!bg-transparent text-white font-black p-0 w-full text-center border-none focus:ring-0 appearance-none text-[11px]" 
-                               style="background-color: transparent !important; -webkit-appearance: none;">
-                    </div>
+                <div class="text-center bg-white/5 rounded-xl py-2 px-1 backdrop-blur-xs">
+                    <p class="text-[9px] text-blue-100/70 font-medium mb-0.5">예인 현재 자산</p>
+                    <p id="yeinCurrentAssetStr" class="text-[11px] font-black text-white">₩ 0</p>
                 </div>
-                <div class="text-center bg-white/10 rounded-xl py-1.5 px-1 border border-white/10">
-                    <p class="text-[9px] text-amber-200 font-bold mb-0.5">현재 총합 자산</p>
+                <div class="text-center bg-white/10 rounded-xl py-2 px-1 border border-white/10">
+                    <p class="text-[9px] text-amber-200 font-bold mb-0.5">합산 총자산</p>
                     <p id="totalAssetsStr" class="text-[11px] font-black text-amber-300">₩ 0</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- [신규 기능 1] 월별 자산 성장 추이 미니 그래프 카드 -->
+    <!-- 월별 자산 성장 추이 미니 그래프 카드 -->
     <section class="glass-card p-4 rounded-2.5xl mb-4">
         <div class="flex justify-between items-center mb-3">
             <div class="flex items-center gap-1.5">
@@ -193,7 +183,6 @@
             <span id="chartGrowthBadge" class="text-[10px] font-extrabold px-2 py-0.5 rounded-lg bg-emerald-50 text-emerald-600 border border-emerald-100">+0% 성장</span>
         </div>
 
-        <!-- 인터랙티브 SVG 차트 컨테이너 -->
         <div class="relative w-full h-36 bg-slate-50/60 rounded-xl p-2 border border-slate-100 overflow-hidden">
             <svg id="growthChartSvg" class="w-full h-full overflow-visible" viewBox="0 0 320 120" preserveAspectRatio="none">
                 <defs>
@@ -202,19 +191,15 @@
                         <stop offset="100%" stop-color="#1d63ed" stop-opacity="0.0"/>
                     </linearGradient>
                 </defs>
-                <!-- 목표선 점선 -->
                 <line x1="0" y1="18" x2="320" y2="18" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="3,3" />
                 <text x="315" y="14" text-anchor="end" fill="#94a3b8" font-size="8" font-weight="700">목표 1.2억</text>
                 
-                <!-- 동적 영역 및 곡선 패스 -->
                 <path id="chartAreaPath" d="" fill="url(#chartGradient)"/>
                 <path id="chartLinePath" d="" fill="none" stroke="#1d63ed" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
                 
-                <!-- 데이터 포인트 그룹 -->
                 <g id="chartPointsGroup"></g>
             </svg>
 
-            <!-- 툴팁 표시기 -->
             <div id="chartTooltip" class="absolute top-2 left-1/2 -translate-x-1/2 bg-slate-900/90 text-white text-[10px] px-2.5 py-1 rounded-lg shadow-lg pointer-events-none opacity-0 transition-opacity whitespace-nowrap">
                 자산 추이 로딩 중
             </div>
@@ -227,7 +212,7 @@
         </div>
     </section>
 
-    <!-- [신규 기능 2] 목표 달성을 위한 권장 저축 가이드 & 입주 시점 예상 카드 -->
+    <!-- 목표 달성 권장 저축 가이드 & 입주 시점 예상 카드 -->
     <section class="grid grid-cols-1 gap-3.5 mb-4">
         <!-- 1. 목표 100% 달성 권장 저축액 가이드 카드 -->
         <div class="glass-card p-4 rounded-2.5xl border border-amber-100 bg-gradient-to-br from-white to-amber-50/30">
@@ -252,7 +237,6 @@
                 <p id="requiredMonthlyStr" class="text-xl font-black text-slate-900 tracking-tight">₩ 0</p>
             </div>
 
-            <!-- 현재 페이스 비교 코멘트 -->
             <p id="guideComment" class="text-[10px] text-slate-600 leading-relaxed font-medium px-1">
                 현재 월평균 저축 페이스를 바탕으로 최적의 달성 경로를 분석 중입니다.
             </p>
@@ -293,9 +277,8 @@
         </div>
     </section>
 
-    <!-- 인터랙티브 입력 섹션 -->
+    <!-- 인터랙티브 입력 섹션 (스마트 총자산 및 직접 내역 추가) -->
     <section class="glass-card p-4 rounded-2.5xl mb-5">
-        <!-- 모바일 탭 세그먼트 -->
         <div class="bg-slate-100 p-1 rounded-xl flex gap-1 mb-4">
             <button id="modeSnapshotBtn" onclick="switchInputMode('snapshot')" class="flex-1 py-2 rounded-lg font-extrabold text-xs transition-all flex items-center justify-center gap-1 bg-white text-brand-600 shadow-xs">
                 <span class="material-symbols-outlined text-[15px]">auto_awesome</span>
@@ -312,7 +295,7 @@
             <div class="flex items-start gap-1.5 bg-blue-50/70 p-2.5 rounded-xl border border-blue-100/60">
                 <span class="material-symbols-outlined text-brand-600 text-[16px] mt-0.5 shrink-0">info</span>
                 <p class="text-[10px] text-slate-600 leading-relaxed font-medium">
-                    급여일 직전 통장의 현금 총액만 입력하면 <strong>이번 달 저축액이 자동 계산</strong>되며, 건너뛴 달은 평균으로 분할 반영됩니다.
+                    급여일 직전 현재 통장의 현금 총액만 입력하면 <strong>이번 달 저축액이 자동 계산</strong>되며, 건너뛴 달은 평균으로 분할 반영됩니다.
                 </p>
             </div>
 
@@ -339,7 +322,6 @@
                     <span class="absolute left-3.5 top-1/2 -translate-y-1/2 font-bold text-slate-400 text-xs">₩</span>
                     <input type="text" id="snapshotBalance" oninput="formatInput(this); handleSnapshotChange();" placeholder="0" class="w-full text-base py-3 pl-7 pr-3 text-right font-black text-slate-900 tracking-tight">
                 </div>
-                <!-- 한글 단위 실시간 환산 -->
                 <p id="koreanWonPreview" class="text-right text-[10px] font-extrabold text-brand-600 mt-0.5 mr-1 h-3.5"></p>
             </div>
 
@@ -391,9 +373,9 @@
             </div>
 
             <div class="flex gap-1 overflow-x-auto pb-0.5">
-                <button type="button" onclick="quickAddAmount('saveAmount', 100000)" class="chip-btn">+10만</button>
-                <button type="button" onclick="quickAddAmount('saveAmount', 500000)" class="chip-btn">+50만</button>
-                <button type="button" onclick="quickAddAmount('saveAmount', 1000000)" class="chip-btn">+100만</button>
+                <button type="button" onclick="quickAddAmount('saveAmount', 100000)" class="chip-btn">+100만</button>
+                <button type="button" onclick="quickAddAmount('saveAmount', 500000)" class="chip-btn">+500만</button>
+                <button type="button" onclick="quickAddAmount('saveAmount', 1000000)" class="chip-btn">+1000만</button>
                 <button type="button" onclick="clearAmount('saveAmount')" class="chip-btn text-rose-500">초기화</button>
             </div>
 
@@ -435,7 +417,7 @@
         const TARGET_AMOUNT = 120155979;
         const TOTAL_MONTHS = 27;
 
-        // 원본 백본 데이터
+        // 원본 내역 백본 데이터
         const initialBackboneRecords = [
             { id: 1714500000001, month: "2026-05", amount: -1000000, person: "자원", memo: "생활비" },
             { id: 1714500000002, month: "2026-05", amount: -700000, person: "자원", memo: "경남은행 중도금대출 수수료 및 이자" },
@@ -445,6 +427,7 @@
             { id: 1714500000006, month: "2026-04", amount: 3663760, person: "자원", memo: "5월 저축" }
         ];
 
+        // 기본 기준 자산 (자원 180만, 예인 4000만)
         let baseJawon = 1800000;
         let baseYein = 40000000;
         let records = [];
@@ -532,6 +515,7 @@
             document.getElementById('directKoreanWonPreview').textContent = formatKoreanWon(amount);
         }
 
+        // 특정 인원의 현재 최신 누적 자산 잔액 계산
         function calculateCumulativeBalance(person, targetMonth = null) {
             const initial = person === '자원' ? baseJawon : baseYein;
             const personRecords = records.filter(r => r.person === person);
@@ -586,9 +570,9 @@
             const feedbackDetail = document.getElementById('feedbackDetail');
 
             if (latestMonth) {
-                prevLabel.textContent = `직전 기록: ${latestMonth} (현재 누적 ₩ ${currentAsset.toLocaleString()})`;
+                prevLabel.textContent = `직전 기록: ${latestMonth} (현재 ₩ ${currentAsset.toLocaleString()})`;
             } else {
-                prevLabel.textContent = `초기 기준액: ₩ ${currentAsset.toLocaleString()}`;
+                prevLabel.textContent = `기준 자산: ₩ ${currentAsset.toLocaleString()}`;
             }
 
             if (!targetMonth || inputBalance === 0) {
@@ -704,7 +688,6 @@
             }
         }
 
-        // SVG 자산 성장 곡선 렌더링 함수
         function renderGrowthChart(timelineData) {
             const svgWidth = 320;
             const svgHeight = 120;
@@ -717,8 +700,7 @@
                 return;
             }
 
-            // 시작점(초기 기준 자산) 포함
-            const initialTotal = getRawValue('baseJawon') + getRawValue('baseYein');
+            const initialTotal = baseJawon + baseYein;
             const dataPoints = [
                 { month: '시작', totalAsset: initialTotal, saving: 0 },
                 ...timelineData
@@ -733,14 +715,12 @@
             const getX = (index) => padding.left + (index / (dataPoints.length - 1 || 1)) * effectiveWidth;
             const getY = (val) => padding.top + effectiveHeight - ((val - minAsset) / (maxAsset - minAsset || 1)) * effectiveHeight;
 
-            // 좌표 계산
             const points = dataPoints.map((d, i) => ({
                 x: getX(i),
                 y: getY(d.totalAsset),
                 data: d
             }));
 
-            // 부드러운 Bezier 곡선 생성
             let linePath = `M ${points[0].x} ${points[0].y}`;
             for (let i = 0; i < points.length - 1; i++) {
                 const p0 = points[i];
@@ -757,7 +737,6 @@
             document.getElementById('chartLinePath').setAttribute('d', linePath);
             document.getElementById('chartAreaPath').setAttribute('d', areaPath);
 
-            // 포인트 및 인터랙션 마커 렌더링
             const pointsGroup = document.getElementById('chartPointsGroup');
             pointsGroup.innerHTML = '';
             const tooltip = document.getElementById('chartTooltip');
@@ -772,7 +751,6 @@
                 circle.setAttribute('stroke-width', '2');
                 circle.setAttribute('class', 'chart-point');
 
-                // 터치 / 마우스 툴팁 이벤트
                 const showTip = () => {
                     tooltip.innerHTML = `<strong>${p.data.month}</strong> : ₩ ${p.data.totalAsset.toLocaleString()} (${formatKoreanWon(p.data.totalAsset)})`;
                     tooltip.style.opacity = '1';
@@ -787,7 +765,6 @@
                 pointsGroup.appendChild(circle);
             });
 
-            // 라벨 및 성장률 뱃지 업데이트
             if (dataPoints.length > 1) {
                 const first = dataPoints[0].totalAsset;
                 const last = dataPoints[dataPoints.length - 1].totalAsset;
@@ -798,11 +775,16 @@
             }
         }
 
+        // 전체 UI 갱신 (초기입력 필드 제거 및 현재 자산 완벽 연동)
         function updateUI() {
-            const totalSaved = records.reduce((sum, r) => sum + parseInt(r.amount || 0), 0);
-            const currentTotal = getRawValue('baseJawon') + getRawValue('baseYein') + totalSaved;
+            const jawonCurrent = calculateCumulativeBalance('자원');
+            const yeinCurrent = calculateCumulativeBalance('예인');
+            const currentTotal = jawonCurrent + yeinCurrent;
             const remaining = Math.max(0, TARGET_AMOUNT - currentTotal);
 
+            // 상단 히어로 카드 수치 업데이트
+            document.getElementById('jawonCurrentAssetStr').textContent = `₩ ${jawonCurrent.toLocaleString()}`;
+            document.getElementById('yeinCurrentAssetStr').textContent = `₩ ${yeinCurrent.toLocaleString()}`;
             document.getElementById('totalAssetsStr').textContent = `₩ ${currentTotal.toLocaleString()}`;
             document.getElementById('remainingStr').textContent = `₩ ${remaining.toLocaleString()}`;
             
@@ -820,7 +802,7 @@
             const uniqueMonths = Object.keys(monthMap).sort();
             const recordedCount = uniqueMonths.length;
 
-            let runningTotal = getRawValue('baseJawon') + getRawValue('baseYein');
+            let runningTotal = baseJawon + baseYein;
             const timelineData = uniqueMonths.map(m => {
                 runningTotal += monthMap[m];
                 return {
@@ -830,7 +812,6 @@
                 };
             });
 
-            // SVG 자산 성장 그래프 렌더링
             renderGrowthChart(timelineData);
 
             if (recordedCount > 0) {
@@ -842,7 +823,6 @@
                 const projectedTotal = currentTotal + (avg * remainingMonths);
                 const diff = projectedTotal - TARGET_AMOUNT;
 
-                // [신규 기능 2] 이번 달 권장 저축액 산출
                 const requiredMonthlySaving = Math.max(0, Math.round(remaining / remainingMonths));
                 document.getElementById('requiredMonthlyStr').textContent = `₩ ${requiredMonthlySaving.toLocaleString()}`;
                 document.getElementById('requiredMonthlyKorean').textContent = formatKoreanWon(requiredMonthlySaving);
@@ -863,7 +843,6 @@
                     guideComment.innerHTML = `목표 100% 도달을 위해 현재보다 <strong>매월 +₩ ${deficit.toLocaleString()}</strong> (${formatKoreanWon(deficit)}) 추가 저축을 권장합니다. 💡`;
                 }
 
-                // 입주 시점 예상 결과
                 document.getElementById('projectedTotalStr').textContent = `₩ ${Math.round(projectedTotal).toLocaleString()}`;
                 document.getElementById('projectedTotalKorean').textContent = formatKoreanWon(Math.round(projectedTotal));
                 
@@ -965,8 +944,6 @@
                     }
                 });
 
-                document.getElementById('baseJawon').value = baseJawon.toLocaleString();
-                document.getElementById('baseYein').value = baseYein.toLocaleString();
                 document.getElementById('syncStatus').innerHTML = '<span class="material-symbols-outlined text-[12px] text-emerald-600">cloud_done</span> 최신 상태';
                 updateUI();
                 handleSnapshotChange();
@@ -980,8 +957,6 @@
 
         async function triggerSave() {
             document.getElementById('syncStatus').innerHTML = '<span class="material-symbols-outlined text-[12px] animate-spin">sync</span> 서버 저장 중...';
-            baseJawon = getRawValue('baseJawon'); 
-            baseYein = getRawValue('baseYein');
             updateUI();
 
             try {
@@ -1001,8 +976,6 @@
             const currentMonthStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}`;
             document.getElementById('saveMonth').value = currentMonthStr;
             document.getElementById('snapshotMonth').value = currentMonthStr;
-            document.getElementById('baseJawon').value = baseJawon.toLocaleString();
-            document.getElementById('baseYein').value = baseYein.toLocaleString();
             records = [...initialBackboneRecords];
             updateUI();
             syncData();
