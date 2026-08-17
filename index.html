@@ -2,10 +2,11 @@
 <html class="light" lang="ko">
 <head>
     <meta charset="utf-8">
-    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="입주 자금 관리">
+    <meta name="theme-color" content="#024099">
     <link rel="apple-touch-icon" href="./icon.png">
     
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
@@ -14,7 +15,7 @@
     
     <title>입주 자금 트래커</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
 
     <script>
@@ -22,157 +23,261 @@
             theme: {
                 extend: {
                     colors: {
-                        "primary": "#005ac1", "on-primary": "#ffffff", "secondary": "#535f70",
-                        "surface": "#f8f9ff", "on-surface": "#191c20", "surface-container": "#f0f0f7"
+                        "brand": {
+                            50: "#eef6ff",
+                            100: "#dbeafe",
+                            500: "#1d63ed",
+                            600: "#024099",
+                            700: "#012d6e"
+                        }
                     },
-                    borderRadius: { '3xl': '24px', '4xl': '32px' }
+                    borderRadius: { '2.5xl': '20px', '3xl': '24px', '4xl': '32px' }
                 }
             }
         }
     </script>
     <style>
-        body { font-family: 'Pretendard', sans-serif; background-color: #f8f9ff; -webkit-tap-highlight-color: transparent; }
-        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        * { -webkit-tap-highlight-color: transparent; }
+        body { 
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif; 
+            background: linear-gradient(180deg, #f4f6fb 0%, #edf1f8 100%); 
+            min-height: 100vh;
+        }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 450, 'GRAD' 0, 'opsz' 24; }
+        .material-symbols-fill { font-variation-settings: 'FILL' 1, 'wght' 450, 'GRAD' 0, 'opsz' 24; }
         ::-webkit-scrollbar { display: none; }
-        input, select { border: none !important; background: #f0f0f7 !important; border-radius: 14px !important; font-size: 16px !important; }
-        input:focus, select:focus { ring: 2px !important; ring-color: #005ac1 !important; outline: none !important; }
-        .card-shadow { box-shadow: 0 10px 30px -5px rgba(0, 90, 193, 0.08); }
-        .badge-interpolated { background: #eef2ff; color: #4338ca; border: 1px solid #c7d2fe; }
+        input, select { 
+            border: none !important; 
+            background: #f1f4fa !important; 
+            border-radius: 16px !important; 
+            font-size: 15px !important; 
+            transition: all 0.2s ease;
+        }
+        input:focus, select:focus { 
+            background: #ffffff !important; 
+            box-shadow: 0 0 0 2px #1d63ed !important; 
+            outline: none !important; 
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            box-shadow: 0 10px 30px -5px rgba(20, 40, 90, 0.05), 0 2px 6px -1px rgba(20, 40, 90, 0.02);
+        }
+        .hero-gradient {
+            background: linear-gradient(135deg, #024099 0%, #1052c5 55%, #1d63ed 100%);
+            box-shadow: 0 16px 36px -8px rgba(2, 64, 153, 0.38);
+        }
+        .badge-interpolated {
+            background: #eef2ff;
+            color: #3730a3;
+            border: 1px solid #c7d2fe;
+        }
+        .chip-btn {
+            background: #f1f4fa;
+            color: #475569;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: 12px;
+            transition: all 0.15s ease;
+        }
+        .chip-btn:active {
+            transform: scale(0.95);
+            background: #e2e8f0;
+        }
     </style>
 </head>
 
-<body class="p-4 md:p-8 max-w-lg mx-auto pb-24 text-slate-800">
-    <!-- 헤더 -->
-    <header class="flex justify-between items-center mb-6 px-2">
-        <div>
-            <h1 class="text-2xl font-extrabold text-on-surface tracking-tight">입주 자금 관리</h1>
-            <p id="syncStatus" class="text-[12px] text-gray-500 flex items-center gap-1 mt-1">
-                <span class="material-symbols-outlined text-[14px]">sync</span> 동기화 대기 중
-            </p>
+<body class="p-4 md:p-6 max-w-lg mx-auto pb-32 text-slate-800 antialiased selection:bg-brand-500 selection:text-white">
+
+    <!-- 상단 모바일 헤더 -->
+    <header class="flex justify-between items-center mb-5 px-1 pt-1">
+        <div class="flex items-center gap-2.5">
+            <div class="w-10 h-10 rounded-2xl bg-brand-50 border border-brand-100 flex items-center justify-center text-brand-600 shadow-sm">
+                <span class="material-symbols-outlined text-[22px]">apartment</span>
+            </div>
+            <div>
+                <h1 class="text-xl font-black text-slate-900 tracking-tight flex items-center gap-1.5">
+                    <span>입주 자금 트래커</span>
+                </h1>
+                <p id="syncStatus" class="text-[11px] text-slate-400 font-medium flex items-center gap-1">
+                    <span class="material-symbols-outlined text-[13px]">sync</span> 동기화 준비 중
+                </p>
+            </div>
         </div>
-        <div class="flex gap-2">
-            <button onclick="syncData()" class="w-10 h-10 rounded-full bg-white shadow-sm border border-gray-100 flex items-center justify-center text-secondary active:scale-90 transition-transform">
+        <div class="flex items-center gap-2">
+            <button onclick="syncData()" aria-label="새로고침" class="w-10 h-10 rounded-2xl bg-white shadow-sm border border-slate-100 flex items-center justify-center text-slate-600 active:scale-90 hover:bg-slate-50 transition-all">
                 <span class="material-symbols-outlined text-[20px]">refresh</span>
             </button>
-            <div class="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-primary">
-                <span class="material-symbols-outlined">favorite</span>
-            </div>
         </div>
     </header>
 
-    <!-- 메인 요약 카드 -->
-    <section class="bg-primary text-white p-7 rounded-4xl shadow-2xl shadow-blue-200/50 mb-6 relative overflow-hidden">
-        <div class="absolute -right-6 -bottom-6 w-32 h-32 bg-white/5 rounded-full blur-xl pointer-events-none"></div>
-        <p class="text-xs opacity-70 mb-1 font-medium">목표까지 남은 잔액</p>
-        <h2 id="remainingStr" class="text-3xl font-bold mb-8">₩ 0</h2>
-        
-        <div class="space-y-6">
-            <div>
-                <div class="flex justify-between text-[11px] mb-2 font-bold opacity-90 tracking-wider">
-                    <span>GOAL ₩ 120,155,979</span>
-                    <span id="percentStr">0%</span>
-                </div>
-                <div class="w-full bg-white/20 h-2.5 rounded-full overflow-hidden">
-                    <div id="progressBar" class="bg-white h-full transition-all duration-1000" style="width: 0%"></div>
-                </div>
+    <!-- 프리미엄 히어로 대시보드 카드 -->
+    <section class="hero-gradient text-white p-6 rounded-4xl mb-5 relative overflow-hidden">
+        <!-- 배경 장식 글로우 -->
+        <div class="absolute -right-10 -top-10 w-44 h-44 bg-white/10 rounded-full blur-2xl pointer-events-none"></div>
+        <div class="absolute -left-10 -bottom-10 w-44 h-44 bg-blue-400/20 rounded-full blur-2xl pointer-events-none"></div>
+
+        <div class="relative z-10">
+            <div class="flex justify-between items-center mb-1">
+                <span class="text-[11px] font-semibold tracking-wide text-blue-100/80">목표까지 남은 잔액</span>
+                <span id="dDayBadge" class="text-[10px] font-extrabold bg-white/15 px-2.5 py-0.5 rounded-full backdrop-blur-sm">총 27개월 플랜</span>
             </div>
             
-            <div class="grid grid-cols-3 gap-2 pt-4 border-t border-white/10">
-                <div class="text-center">
-                    <p class="text-[10px] opacity-70 mb-1">자원 초기자산</p>
+            <h2 id="remainingStr" class="text-3xl font-black mb-6 tracking-tight">₩ 0</h2>
+            
+            <!-- 프로그레스 게이지 -->
+            <div class="mb-6 space-y-2">
+                <div class="flex justify-between items-end text-xs font-bold text-blue-100">
+                    <div class="flex items-center gap-1.5">
+                        <span class="text-[11px] opacity-75">목표</span>
+                        <span class="font-black text-white">₩ 120,155,979</span>
+                    </div>
+                    <span id="percentStr" class="text-base font-black text-amber-300">0.0%</span>
+                </div>
+                <div class="w-full bg-black/20 h-3 rounded-full overflow-hidden p-0.5 backdrop-blur-sm">
+                    <div id="progressBar" class="bg-gradient-to-r from-amber-300 to-white h-full rounded-full transition-all duration-1000 shadow-sm" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <!-- 자산 분할 지분 요약 -->
+            <div class="grid grid-cols-3 gap-2 pt-4 border-t border-white/15">
+                <div class="text-center bg-white/5 rounded-2xl py-2 px-1 backdrop-blur-xs">
+                    <p class="text-[10px] text-blue-100/70 font-medium mb-0.5">자원 초기</p>
                     <div class="flex items-center justify-center gap-0.5">
-                        <span class="text-[10px] font-bold">₩</span>
+                        <span class="text-[9px] font-bold opacity-80">₩</span>
                         <input type="text" id="baseJawon" oninput="formatInput(this); triggerSave();" 
-                               class="!bg-transparent text-white font-bold p-0 w-full text-center border-none focus:ring-0 appearance-none text-xs" 
+                               class="!bg-transparent text-white font-black p-0 w-full text-center border-none focus:ring-0 appearance-none text-xs" 
                                style="background-color: transparent !important; -webkit-appearance: none;">
                     </div>
                 </div>
-                <div class="text-center">
-                    <p class="text-[10px] opacity-70 mb-1">예인 초기자산</p>
+                <div class="text-center bg-white/5 rounded-2xl py-2 px-1 backdrop-blur-xs">
+                    <p class="text-[10px] text-blue-100/70 font-medium mb-0.5">예인 초기</p>
                     <div class="flex items-center justify-center gap-0.5">
-                        <span class="text-[10px] font-bold">₩</span>
+                        <span class="text-[9px] font-bold opacity-80">₩</span>
                         <input type="text" id="baseYein" oninput="formatInput(this); triggerSave();" 
-                               class="!bg-transparent text-white font-bold p-0 w-full text-center border-none focus:ring-0 appearance-none text-xs" 
+                               class="!bg-transparent text-white font-black p-0 w-full text-center border-none focus:ring-0 appearance-none text-xs" 
                                style="background-color: transparent !important; -webkit-appearance: none;">
                     </div>
                 </div>
-                <div class="text-center border-l border-white/10">
-                    <p class="text-[10px] opacity-100 font-bold mb-1">현재 총합 자산</p>
+                <div class="text-center bg-white/10 rounded-2xl py-2 px-1 border border-white/10">
+                    <p class="text-[10px] text-amber-200 font-bold mb-0.5">현재 총합 자산</p>
                     <p id="totalAssetsStr" class="text-xs font-black text-amber-300">₩ 0</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- 월 평균 & 예상 카드 -->
-    <section class="bg-white border border-blue-50/50 p-6 rounded-3xl mb-6 card-shadow grid grid-cols-2 gap-4">
-        <div class="bg-slate-50 p-4 rounded-2xl">
-            <p class="text-[10px] text-secondary font-bold uppercase mb-1">월 평균 저축</p>
-            <p id="avgSavedStr" class="font-bold text-on-surface text-base">₩ 0</p>
-            <p id="recordedMonthsStr" class="text-[10px] text-gray-400 mt-1">기록 기간: 0개월</p>
-        </div>
-        <div id="predictionCard" class="bg-slate-50 p-4 rounded-2xl transition-all">
-            <p class="text-[10px] text-secondary font-bold uppercase mb-1">예상 결과</p>
-            <p id="predictionResult" class="font-bold text-sm">계산 중...</p>
-            <p id="predictionSub" class="text-[10px] text-gray-500 mt-1">목표 달성 시점 분석</p>
+    <!-- 스마트 분석 및 입주 시점 예상 결과 카드 (사용자 요구사항 완벽 반영) -->
+    <section class="grid grid-cols-1 gap-3.5 mb-5">
+        <!-- 1. 입주 시점 예상 최종 자산 카드 -->
+        <div id="predictionMainCard" class="glass-card p-5 rounded-3xl border border-blue-100/80 transition-all relative overflow-hidden">
+            <div class="flex items-center justify-between mb-3">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-xl bg-brand-50 text-brand-600 flex items-center justify-center">
+                        <span class="material-symbols-outlined text-[20px]">analytics</span>
+                    </div>
+                    <div>
+                        <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider">입주 시점 예상 총액</h3>
+                        <p id="predictionTargetDate" class="text-[11px] text-slate-400 font-medium">27개월 만기 시뮬레이션</p>
+                    </div>
+                </div>
+                <span id="predictionBadge" class="text-[11px] font-bold px-2.5 py-1 rounded-xl bg-blue-50 text-brand-600">계산 중</span>
+            </div>
+
+            <!-- 예상 최종 총액 수치 강조 -->
+            <div class="bg-slate-50/80 rounded-2xl p-4 border border-slate-100 mb-3">
+                <div class="flex justify-between items-baseline mb-1">
+                    <span class="text-[11px] font-bold text-slate-500">예상 최종 자산 총액</span>
+                    <span id="projectedTotalKorean" class="text-[11px] font-extrabold text-brand-600"></span>
+                </div>
+                <p id="projectedTotalStr" class="text-2xl font-black text-slate-900 tracking-tight">₩ 0</p>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2 text-xs">
+                <div class="bg-white p-3 rounded-xl border border-slate-100">
+                    <p class="text-[10px] font-bold text-slate-400 mb-0.5">목표 대비 차액</p>
+                    <p id="predictionResult" class="font-black text-[13px] text-slate-800">계산 중...</p>
+                </div>
+                <div class="bg-white p-3 rounded-xl border border-slate-100">
+                    <p class="text-[10px] font-bold text-slate-400 mb-0.5">월 평균 저축 페이스</p>
+                    <p id="avgSavedStr" class="font-black text-[13px] text-brand-600">₩ 0</p>
+                </div>
+            </div>
         </div>
     </section>
 
-    <!-- 통합 입력 섹션 (스마트 총자산 스냅샷 & 직접 내역 추가 탭 지원) -->
-    <section class="bg-white border border-blue-50/50 p-6 rounded-3xl mb-6 card-shadow">
-        <div class="flex items-center justify-between mb-4 border-b border-gray-100 pb-3">
-            <div class="flex gap-2">
-                <button id="modeSnapshotBtn" onclick="switchInputMode('snapshot')" class="text-xs font-bold px-3 py-1.5 rounded-xl bg-primary text-white transition-all flex items-center gap-1">
-                    <span class="material-symbols-outlined text-[16px]">auto_awesome</span>
-                    <span>스마트 총자산 입력</span>
-                </button>
-                <button id="modeDirectBtn" onclick="switchInputMode('direct')" class="text-xs font-bold px-3 py-1.5 rounded-xl bg-slate-100 text-secondary transition-all flex items-center gap-1">
-                    <span class="material-symbols-outlined text-[16px]">add_task</span>
-                    <span>직접 내역 추가</span>
-                </button>
-            </div>
+    <!-- 인터랙티브 입력 섹션 (모바일 최적화 세그먼트 컨트롤) -->
+    <section class="glass-card p-5 rounded-3xl mb-6">
+        <!-- 모바일 탭 세그먼트 -->
+        <div class="bg-slate-100 p-1 rounded-2xl flex gap-1 mb-5">
+            <button id="modeSnapshotBtn" onclick="switchInputMode('snapshot')" class="flex-1 py-2.5 rounded-xl font-extrabold text-xs transition-all flex items-center justify-center gap-1.5 bg-white text-brand-600 shadow-xs">
+                <span class="material-symbols-outlined text-[17px]">auto_awesome</span>
+                <span>스마트 총자산 입력</span>
+            </button>
+            <button id="modeDirectBtn" onclick="switchInputMode('direct')" class="flex-1 py-2.5 rounded-xl font-bold text-xs transition-all flex items-center justify-center gap-1.5 text-slate-500 hover:text-slate-700">
+                <span class="material-symbols-outlined text-[17px]">edit_note</span>
+                <span>직접 내역 추가</span>
+            </button>
         </div>
 
         <!-- 1. 스마트 총자산 스냅샷 모드 -->
         <div id="snapshotInputContainer" class="space-y-4">
-            <p class="text-[11px] text-gray-500">급여일 직전 통장의 현금 총액을 입력하면 이번 달 저축액이 자동 계산되며, 건너뛴 달은 평균으로 자동 분할 반영됩니다.</p>
-            
+            <div class="flex items-start gap-2 bg-blue-50/70 p-3 rounded-2xl border border-blue-100/60">
+                <span class="material-symbols-outlined text-brand-600 text-[18px] mt-0.5 shrink-0">info</span>
+                <p class="text-[11px] text-slate-600 leading-relaxed font-medium">
+                    급여일 직전 통장의 현금 총액만 입력하면 <strong>이번 달 저축액이 자동 계산</strong>되며, 건너뛴 달은 평균으로 자동 분할 반영됩니다.
+                </p>
+            </div>
+
             <div class="grid grid-cols-12 gap-3">
                 <div class="col-span-4">
-                    <label class="text-[10px] text-secondary font-bold ml-1 mb-1 block">대상자</label>
-                    <select id="snapshotPerson" onchange="handleSnapshotChange()" class="w-full text-sm py-3 px-2 font-bold text-slate-700">
+                    <label class="text-[11px] text-slate-500 font-bold ml-1 mb-1.5 block">대상자</label>
+                    <select id="snapshotPerson" onchange="handleSnapshotChange()" class="w-full text-sm py-3 px-3 font-bold text-slate-800">
                         <option value="자원">자원</option>
                         <option value="예인">예인</option>
                     </select>
                 </div>
                 <div class="col-span-8">
-                    <label class="text-[10px] text-secondary font-bold ml-1 mb-1 block">기준 연월</label>
-                    <input type="month" id="snapshotMonth" onchange="handleSnapshotChange()" class="w-full text-sm py-3 px-3 font-bold text-slate-700">
+                    <label class="text-[11px] text-slate-500 font-bold ml-1 mb-1.5 block">기준 연월</label>
+                    <input type="month" id="snapshotMonth" onchange="handleSnapshotChange()" class="w-full text-sm py-3 px-3 font-bold text-slate-800">
                 </div>
             </div>
 
             <div>
-                <div class="flex justify-between items-center ml-1 mb-1">
-                    <label class="text-[10px] text-secondary font-bold">현재 현금 총자산 잔액</label>
-                    <span id="prevSnapshotLabel" class="text-[10px] text-gray-400">직전 자산 계산 중...</span>
+                <div class="flex justify-between items-center ml-1 mb-1.5">
+                    <label class="text-[11px] text-slate-500 font-bold">현재 현금 총자산 잔액</label>
+                    <span id="prevSnapshotLabel" class="text-[10px] text-slate-400 font-medium">직전 자산 계산 중...</span>
                 </div>
                 <div class="relative">
-                    <span class="absolute left-4 top-1/2 -translate-y-1/2 font-bold text-slate-400">₩</span>
-                    <input type="text" id="snapshotBalance" oninput="formatInput(this); handleSnapshotChange();" placeholder="0" class="w-full text-base py-3.5 pl-8 pr-4 text-right font-bold text-slate-900">
+                    <span class="absolute left-4 top-1/2 -translate-y-1/2 font-bold text-slate-400 text-sm">₩</span>
+                    <input type="text" id="snapshotBalance" oninput="formatInput(this); handleSnapshotChange();" placeholder="0" class="w-full text-lg py-3.5 pl-8 pr-4 text-right font-black text-slate-900 tracking-tight">
                 </div>
+                <!-- 한글 단위 실시간 환산 표기 -->
+                <p id="koreanWonPreview" class="text-right text-[11px] font-extrabold text-brand-600 mt-1 mr-1 h-4"></p>
             </div>
 
-            <!-- 실시간 분석 피드백 카드 -->
-            <div id="smartFeedbackCard" class="bg-blue-50/60 border border-blue-100 p-3.5 rounded-2xl text-xs space-y-1.5 transition-all">
-                <div class="flex items-center gap-1.5 font-bold text-primary">
-                    <span class="material-symbols-outlined text-[16px]">insights</span>
-                    <span id="feedbackTitle">자동 계산 대기 중</span>
-                </div>
-                <p id="feedbackDetail" class="text-slate-600 leading-relaxed text-[11px]">금액을 입력하시면 직전 자산 대비 증가액과 월별 저축 분할액이 자동 계산됩니다.</p>
+            <!-- 빠른 금액 추가 칩 버튼 (모바일 편의 UX) -->
+            <div class="flex gap-1.5 overflow-x-auto pb-1">
+                <button type="button" onclick="quickAddAmount('snapshotBalance', 1000000)" class="chip-btn">+100만</button>
+                <button type="button" onclick="quickAddAmount('snapshotBalance', 5000000)" class="chip-btn">+500만</button>
+                <button type="button" onclick="quickAddAmount('snapshotBalance', 10000000)" class="chip-btn">+1000만</button>
+                <button type="button" onclick="clearAmount('snapshotBalance')" class="chip-btn text-rose-500">초기화</button>
             </div>
 
-            <button onclick="applySnapshotSaving()" class="w-full bg-primary text-white font-bold py-4 rounded-2xl active:scale-95 transition-transform shadow-lg shadow-blue-100 flex items-center justify-center gap-2">
-                <span class="material-symbols-outlined text-[18px]">check_circle</span>
+            <!-- 실시간 스마트 피드백 카드 -->
+            <div id="smartFeedbackCard" class="bg-slate-50 border border-slate-200/80 p-3.5 rounded-2xl text-xs space-y-1.5 transition-all">
+                <div class="flex items-center gap-1.5 font-bold text-slate-700">
+                    <span class="material-symbols-outlined text-[16px] text-brand-600">insights</span>
+                    <span id="feedbackTitle">금액을 입력해 주세요</span>
+                </div>
+                <p id="feedbackDetail" class="text-slate-500 leading-relaxed text-[11px]">직전 기록 대비 순자산 증가액과 월별 저축 분할액이 자동 산출됩니다.</p>
+            </div>
+
+            <button onclick="applySnapshotSaving()" class="w-full bg-brand-500 hover:bg-brand-600 text-white font-extrabold py-4 rounded-2xl active:scale-98 transition-all shadow-lg shadow-blue-500/25 flex items-center justify-center gap-2">
+                <span class="material-symbols-outlined text-[20px]">check_circle</span>
                 <span>자산 기록 및 자동 계산 반영</span>
             </button>
         </div>
@@ -181,43 +286,62 @@
         <div id="directInputContainer" class="space-y-4 hidden">
             <div class="grid grid-cols-12 gap-3">
                 <div class="col-span-4">
-                    <label class="text-[10px] text-secondary font-bold ml-1 mb-1 block">작성자</label>
-                    <select id="savePerson" class="w-full text-sm py-3 px-2 font-bold text-slate-700">
+                    <label class="text-[11px] text-slate-500 font-bold ml-1 mb-1.5 block">작성자</label>
+                    <select id="savePerson" class="w-full text-sm py-3 px-3 font-bold text-slate-800">
                         <option value="자원">자원</option>
                         <option value="예인">예인</option>
                     </select>
                 </div>
                 <div class="col-span-8">
-                    <label class="text-[10px] text-secondary font-bold ml-1 mb-1 block">연도 및 월</label>
-                    <input type="month" id="saveMonth" class="w-full text-sm py-3 px-3 font-bold text-slate-700">
+                    <label class="text-[11px] text-slate-500 font-bold ml-1 mb-1.5 block">연도 및 월</label>
+                    <input type="month" id="saveMonth" class="w-full text-sm py-3 px-3 font-bold text-slate-800">
                 </div>
             </div>
             <div>
-                <label class="text-[10px] text-secondary font-bold ml-1 mb-1 block">금액</label>
-                <input type="text" id="saveAmount" oninput="formatInput(this)" placeholder="0" class="w-full text-sm py-3.5 px-4 text-right font-bold">
+                <label class="text-[11px] text-slate-500 font-bold ml-1 mb-1.5 block">금액</label>
+                <div class="relative">
+                    <span class="absolute left-4 top-1/2 -translate-y-1/2 font-bold text-slate-400 text-sm">₩</span>
+                    <input type="text" id="saveAmount" oninput="formatInput(this); updateDirectKoreanPreview();" placeholder="0" class="w-full text-lg py-3.5 pl-8 pr-4 text-right font-black text-slate-900 tracking-tight">
+                </div>
+                <p id="directKoreanWonPreview" class="text-right text-[11px] font-extrabold text-brand-600 mt-1 mr-1 h-4"></p>
             </div>
+
+            <div class="flex gap-1.5 overflow-x-auto pb-1">
+                <button type="button" onclick="quickAddAmount('saveAmount', 100000)" class="chip-btn">+10만</button>
+                <button type="button" onclick="quickAddAmount('saveAmount', 500000)" class="chip-btn">+50만</button>
+                <button type="button" onclick="quickAddAmount('saveAmount', 1000000)" class="chip-btn">+100만</button>
+                <button type="button" onclick="clearAmount('saveAmount')" class="chip-btn text-rose-500">초기화</button>
+            </div>
+
             <div>
-                <label class="text-[10px] text-secondary font-bold ml-1 mb-1 block">메모</label>
-                <input type="text" id="saveMemo" placeholder="내용을 입력하세요 (예: 6월 성과금, 생활비 등)" class="w-full text-sm py-3.5 px-4">
+                <label class="text-[11px] text-slate-500 font-bold ml-1 mb-1.5 block">메모</label>
+                <input type="text" id="saveMemo" placeholder="내용을 입력하세요 (예: 성과금, 생활비 등)" class="w-full text-sm py-3.5 px-4 font-medium">
             </div>
-            <div class="flex gap-3 pt-2">
-                <button onclick="addDirectRecord(1)" class="flex-[2] bg-primary text-white font-bold py-4 rounded-2xl active:scale-95 transition-transform shadow-lg shadow-blue-100">저축</button>
-                <button onclick="addDirectRecord(-1)" class="flex-1 bg-slate-100 text-secondary font-bold py-4 rounded-2xl active:scale-95 transition-transform">지출</button>
+            
+            <div class="flex gap-2.5 pt-1">
+                <button onclick="addDirectRecord(1)" class="flex-2 bg-brand-500 text-white font-extrabold py-3.5 rounded-2xl active:scale-98 transition-all shadow-md shadow-blue-500/20 flex items-center justify-center gap-1">
+                    <span class="material-symbols-outlined text-[18px]">add_circle</span>
+                    <span>저축 추가</span>
+                </button>
+                <button onclick="addDirectRecord(-1)" class="flex-1 bg-rose-50 text-rose-600 font-extrabold py-3.5 rounded-2xl active:scale-98 transition-all border border-rose-100 flex items-center justify-center gap-1">
+                    <span class="material-symbols-outlined text-[18px]">remove_circle</span>
+                    <span>지출 추가</span>
+                </button>
             </div>
         </div>
     </section>
 
-    <!-- 전체 내역 목록 -->
+    <!-- 히스토리 목록 헤더 및 리스트 -->
     <section>
-        <div class="flex justify-between items-center mb-3 px-2">
-            <h3 class="font-bold text-on-surface text-sm flex items-center gap-1.5">
-                <span class="material-symbols-outlined text-[18px] text-primary">history</span>
+        <div class="flex justify-between items-center mb-3 px-1">
+            <h3 class="font-extrabold text-slate-900 text-sm flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-[18px] text-brand-600">receipt_long</span>
                 <span>전체 내역 히스토리</span>
             </h3>
-            <span id="historyCountBadge" class="text-[11px] font-bold text-gray-400">0건</span>
+            <span id="historyCountBadge" class="text-[11px] font-extrabold px-2 py-0.5 rounded-lg bg-white border border-slate-100 text-slate-500 shadow-2xs">0건</span>
         </div>
 
-        <div id="historyList" class="space-y-3">
+        <div id="historyList" class="space-y-2.5">
             <!-- 내역 카드 리스트 -->
         </div>
     </section>
@@ -225,9 +349,9 @@
     <script>
         const GAS_URL = "https://script.google.com/macros/s/AKfycbzMnN0TuWoyh4ibVMftW0lG9vqxB3BgeCYBYy8xDS8vYQPGo-VXNlkT_EpE_JDQVKtd/exec"; 
         const TARGET_AMOUNT = 120155979;
-        const TOTAL_MONTHS = 27;
+        const TOTAL_MONTHS = 27; // 전체 관리 목표 개월 수
 
-        // 원본 내역 완벽 보존 데이터베이스
+        // 원본 백본 데이터
         const initialBackboneRecords = [
             { id: 1714500000001, month: "2026-05", amount: -1000000, person: "자원", memo: "생활비" },
             { id: 1714500000002, month: "2026-05", amount: -700000, person: "자원", memo: "경남은행 중도금대출 수수료 및 이자" },
@@ -242,6 +366,7 @@
         let records = [];
         let currentInputMode = 'snapshot'; // 'snapshot' | 'direct'
 
+        // 유틸리티 함수
         function formatInput(el) {
             let val = el.value.replace(/[^0-9]/g, "");
             if (val.length > 0) el.value = parseInt(val).toLocaleString(); else el.value = "";
@@ -251,11 +376,30 @@
             if (!el) return 0;
             return parseInt(el.value.replace(/,/g, "")) || 0; 
         }
+
+        // 한국어 금액 단위 포맷 (모바일 0 개수 헷갈림 방지)
+        function formatKoreanWon(num) {
+            if (!num || isNaN(num) || num === 0) return '';
+            const isNegative = num < 0;
+            num = Math.abs(num);
+            
+            const eok = Math.floor(num / 100000000);
+            const man = Math.floor((num % 100000000) / 10000);
+            const won = num % 10000;
+            
+            let result = '';
+            if (eok > 0) result += `${eok}억 `;
+            if (man > 0) result += `${man.toLocaleString()}만 `;
+            if (won > 0 && eok === 0 && man === 0) result += `${won.toLocaleString()}`;
+            result += '원';
+            
+            return isNegative ? `(감소) ${result.trim()}` : result.trim();
+        }
+
         function getSafeMonthDisplay(m) { 
             if (!m) return '';
             if (typeof m === 'string' && m.includes('T')) {
                 const d = new Date(m);
-                // UTC 시간을 KST(UTC+9)로 변환하여 정확한 연월 산출
                 const kstDate = new Date(d.getTime() + (9 * 60 * 60 * 1000));
                 const y = kstDate.getUTCFullYear();
                 const mo = String(kstDate.getUTCMonth() + 1).padStart(2, '0');
@@ -277,6 +421,34 @@
             const ry = d.getFullYear();
             const rmo = String(d.getMonth() + 1).padStart(2, '0');
             return `${ry}-${rmo}`;
+        }
+
+        // 빠른 금액 추가 버튼 함수
+        function quickAddAmount(inputId, addValue) {
+            const current = getRawValue(inputId);
+            const nextVal = current + addValue;
+            const el = document.getElementById(inputId);
+            el.value = nextVal.toLocaleString();
+            if (inputId === 'snapshotBalance') {
+                handleSnapshotChange();
+            } else if (inputId === 'saveAmount') {
+                updateDirectKoreanPreview();
+            }
+        }
+
+        function clearAmount(inputId) {
+            const el = document.getElementById(inputId);
+            el.value = '';
+            if (inputId === 'snapshotBalance') {
+                handleSnapshotChange();
+            } else if (inputId === 'saveAmount') {
+                updateDirectKoreanPreview();
+            }
+        }
+
+        function updateDirectKoreanPreview() {
+            const amount = getRawValue('saveAmount');
+            document.getElementById('directKoreanWonPreview').textContent = formatKoreanWon(amount);
         }
 
         // 특정 인원의 특정 월 시점까지의 누적 자산 잔액 계산
@@ -309,14 +481,14 @@
             const dirCont = document.getElementById('directInputContainer');
 
             if (mode === 'snapshot') {
-                snapBtn.className = "text-xs font-bold px-3 py-1.5 rounded-xl bg-primary text-white transition-all flex items-center gap-1";
-                dirBtn.className = "text-xs font-bold px-3 py-1.5 rounded-xl bg-slate-100 text-secondary transition-all flex items-center gap-1";
+                snapBtn.className = "flex-1 py-2.5 rounded-xl font-extrabold text-xs transition-all flex items-center justify-center gap-1.5 bg-white text-brand-600 shadow-xs";
+                dirBtn.className = "flex-1 py-2.5 rounded-xl font-bold text-xs transition-all flex items-center justify-center gap-1.5 text-slate-500 hover:text-slate-700";
                 snapCont.classList.remove('hidden');
                 dirCont.classList.add('hidden');
                 handleSnapshotChange();
             } else {
-                dirBtn.className = "text-xs font-bold px-3 py-1.5 rounded-xl bg-primary text-white transition-all flex items-center gap-1";
-                snapBtn.className = "text-xs font-bold px-3 py-1.5 rounded-xl bg-slate-100 text-secondary transition-all flex items-center gap-1";
+                dirBtn.className = "flex-1 py-2.5 rounded-xl font-extrabold text-xs transition-all flex items-center justify-center gap-1.5 bg-white text-brand-600 shadow-xs";
+                snapBtn.className = "flex-1 py-2.5 rounded-xl font-bold text-xs transition-all flex items-center justify-center gap-1.5 text-slate-500 hover:text-slate-700";
                 dirCont.classList.remove('hidden');
                 snapCont.classList.add('hidden');
             }
@@ -327,6 +499,8 @@
             const person = document.getElementById('snapshotPerson').value;
             const targetMonth = document.getElementById('snapshotMonth').value;
             const inputBalance = getRawValue('snapshotBalance');
+
+            document.getElementById('koreanWonPreview').textContent = formatKoreanWon(inputBalance);
 
             const latestMonth = getLatestRecordedMonth(person);
             const currentAsset = calculateCumulativeBalance(person);
@@ -341,8 +515,8 @@
             }
 
             if (!targetMonth || inputBalance === 0) {
-                feedbackTitle.textContent = "자동 계산 대기 중";
-                feedbackDetail.textContent = "금액을 입력하시면 직전 자산 대비 증가액과 월별 저축 분할액이 자동 계산됩니다.";
+                feedbackTitle.textContent = "금액을 입력해 주세요";
+                feedbackDetail.textContent = "직전 기록 대비 순자산 증가액과 월별 저축 분할액이 자동 산출됩니다.";
                 return;
             }
 
@@ -353,20 +527,20 @@
             if (diff >= 0) {
                 if (gap > 1) {
                     const avg = Math.round(diff / gap);
-                    feedbackTitle.innerHTML = `<span class="text-primary font-bold">+ ₩ ${diff.toLocaleString()} 증가 (${gap}개월 미입력 평균 분할)</span>`;
-                    feedbackDetail.innerHTML = `직전 입력(${baseMonth}) 대비 <strong>${gap}개월</strong> 만의 기록입니다. 중간 누락 기간 동안 <strong>매월 +₩ ${avg.toLocaleString()}</strong>씩 균등 배분하여 자동 반영합니다.`;
+                    feedbackTitle.innerHTML = `<span class="text-brand-600 font-extrabold">+ ₩ ${diff.toLocaleString()} 증가 (${gap}개월 미입력 평균 분할)</span>`;
+                    feedbackDetail.innerHTML = `직전 입력(${baseMonth}) 대비 <strong>${gap}개월</strong> 만의 기록입니다. 중간 누락 기간 동안 <strong>매월 +₩ ${avg.toLocaleString()}</strong> (${formatKoreanWon(avg)})씩 균등 배분하여 자동 반영합니다.`;
                 } else {
-                    feedbackTitle.innerHTML = `<span class="text-primary font-bold">+ ₩ ${diff.toLocaleString()} 이번 달 저축 증가</span>`;
-                    feedbackDetail.innerHTML = `직전 자산 대비 순 자산이 <strong>₩ ${diff.toLocaleString()}</strong> 증가하였습니다.`;
+                    feedbackTitle.innerHTML = `<span class="text-brand-600 font-extrabold">+ ₩ ${diff.toLocaleString()} 이번 달 저축 증가</span>`;
+                    feedbackDetail.innerHTML = `직전 자산 대비 순 자산이 <strong>₩ ${diff.toLocaleString()}</strong> (${formatKoreanWon(diff)}) 증가하였습니다.`;
                 }
             } else {
                 const absDiff = Math.abs(diff);
                 if (gap > 1) {
                     const avg = Math.round(absDiff / gap);
-                    feedbackTitle.innerHTML = `<span class="text-rose-600 font-bold">₩ ${absDiff.toLocaleString()} 자산 감소 (${gap}개월 보간)</span>`;
+                    feedbackTitle.innerHTML = `<span class="text-rose-600 font-extrabold">₩ ${absDiff.toLocaleString()} 자산 감소 (${gap}개월 보간)</span>`;
                     feedbackDetail.innerHTML = `직전 기록 대비 ${gap}개월 동안 총 자산이 감소하였습니다. 매월 <strong>-₩ ${avg.toLocaleString()}</strong>씩 분할 반영됩니다.`;
                 } else {
-                    feedbackTitle.innerHTML = `<span class="text-rose-600 font-bold">₩ ${absDiff.toLocaleString()} 자산 감소</span>`;
+                    feedbackTitle.innerHTML = `<span class="text-rose-600 font-extrabold">₩ ${absDiff.toLocaleString()} 자산 감소</span>`;
                     feedbackDetail.innerHTML = `직전 자산 대비 총자산이 <strong>₩ ${absDiff.toLocaleString()}</strong> 감소하였습니다.`;
                 }
             }
@@ -393,7 +567,6 @@
             const totalDiff = inputBalance - currentAsset;
 
             if (gap <= 1) {
-                // 1개월 정상 입력
                 records.push({
                     id: Date.now(),
                     month: targetMonth,
@@ -402,7 +575,6 @@
                     memo: totalDiff >= 0 ? '월간 자산 저축' : '월간 자산 감소'
                 });
             } else {
-                // 미입력 다중 월: 평균 분할 보간 레코드 생성
                 const avgDiff = Math.round(totalDiff / gap);
                 let accumulated = 0;
 
@@ -423,11 +595,12 @@
             }
 
             document.getElementById('snapshotBalance').value = '';
+            document.getElementById('koreanWonPreview').textContent = '';
             handleSnapshotChange();
             triggerSave();
         }
 
-        // 직접 내역 추가 (기존 방식 저축/지출)
+        // 직접 내역 추가 (기존 방식)
         function addDirectRecord(type) {
             const person = document.getElementById('savePerson').value;
             const month = document.getElementById('saveMonth').value;
@@ -445,6 +618,7 @@
 
             document.getElementById('saveAmount').value = '';
             document.getElementById('saveMemo').value = '';
+            document.getElementById('directKoreanWonPreview').textContent = '';
             triggerSave();
         }
 
@@ -456,7 +630,7 @@
             }
         }
 
-        // UI 갱신 함수
+        // UI 갱신 함수 (예상 총액 및 차액 정밀 연산)
         function updateUI() {
             const totalSaved = records.reduce((sum, r) => sum + parseInt(r.amount || 0), 0);
             const currentTotal = getRawValue('baseJawon') + getRawValue('baseYein') + totalSaved;
@@ -469,7 +643,7 @@
             document.getElementById('progressBar').style.width = percent + "%";
             document.getElementById('percentStr').textContent = `${percent.toFixed(1)}%`;
 
-            // 월 평균 저축액 계산
+            // 월별 저축액 집계
             const monthMap = {};
             records.forEach(r => {
                 const m = getSafeMonthDisplay(r.month);
@@ -483,34 +657,40 @@
                 const sumSavings = uniqueMonths.reduce((acc, m) => acc + monthMap[m], 0);
                 const avg = sumSavings / recordedCount;
                 document.getElementById('avgSavedStr').textContent = `₩ ${Math.round(avg).toLocaleString()}`;
-                document.getElementById('recordedMonthsStr').textContent = `기록 기간: ${recordedCount}개월간 추이`;
 
+                // 입주 시점 예상 최종 자산 총액 계산
                 const remainingMonths = Math.max(0, TOTAL_MONTHS - recordedCount);
-                const diff = (currentTotal + (avg * remainingMonths)) - TARGET_AMOUNT;
+                const projectedTotal = currentTotal + (avg * remainingMonths);
+                const diff = projectedTotal - TARGET_AMOUNT;
+
+                // 예상 최종 총액 및 한글 금액 표기
+                document.getElementById('projectedTotalStr').textContent = `₩ ${Math.round(projectedTotal).toLocaleString()}`;
+                document.getElementById('projectedTotalKorean').textContent = formatKoreanWon(Math.round(projectedTotal));
+                
                 const pEl = document.getElementById('predictionResult');
-                const pSub = document.getElementById('predictionSub');
-                const pCard = document.getElementById('predictionCard');
+                const pBadge = document.getElementById('predictionBadge');
 
                 if (diff >= 0) {
-                    pEl.innerHTML = `<span class="text-primary font-bold">+ ₩ ${Math.round(diff / 10000).toLocaleString()}만</span>`;
-                    pSub.textContent = "목표 초과 달성 예상";
-                    pCard.style.backgroundColor = "#eff6ff";
+                    pEl.innerHTML = `<span class="text-brand-600 font-black">+ ₩ ${Math.round(diff).toLocaleString()} 초과</span>`;
+                    pBadge.className = "text-[11px] font-extrabold px-2.5 py-1 rounded-xl bg-blue-50 text-brand-600 border border-blue-100";
+                    pBadge.textContent = "목표 초과 달성";
                 } else {
-                    pEl.innerHTML = `<span class="text-rose-600 font-bold">- ₩ ${Math.round(Math.abs(diff) / 10000).toLocaleString()}만</span>`;
-                    pSub.textContent = "월 저축액 상향 필요";
-                    pCard.style.backgroundColor = "#fff1f2";
+                    pEl.innerHTML = `<span class="text-rose-600 font-black">₩ ${Math.round(Math.abs(diff)).toLocaleString()} 부족</span>`;
+                    pBadge.className = "text-[11px] font-extrabold px-2.5 py-1 rounded-xl bg-rose-50 text-rose-600 border border-rose-100";
+                    pBadge.textContent = "저축 상향 필요";
                 }
             } else {
                 document.getElementById('avgSavedStr').textContent = `₩ 0`;
-                document.getElementById('recordedMonthsStr').textContent = `기록 대기 중`;
+                document.getElementById('projectedTotalStr').textContent = `₩ ${currentTotal.toLocaleString()}`;
+                document.getElementById('projectedTotalKorean').textContent = formatKoreanWon(currentTotal);
                 document.getElementById('predictionResult').textContent = `데이터 부족`;
-                document.getElementById('predictionSub').textContent = `내역을 입력해 주세요`;
+                document.getElementById('predictionBadge').textContent = `시뮬레이션 대기`;
             }
 
-            // 히스토리 리스트 렌더링
             renderHistoryList();
         }
 
+        // 히스토리 목록 렌더링
         function renderHistoryList() {
             const listEl = document.getElementById('historyList');
             listEl.innerHTML = '';
@@ -518,14 +698,13 @@
 
             if (records.length === 0) {
                 listEl.innerHTML = `
-                    <div class="bg-white p-8 rounded-3xl border border-gray-100 text-center text-gray-400 text-xs">
-                        <span class="material-symbols-outlined text-3xl mb-2 text-gray-300">receipt_long</span>
-                        <p>등록된 내역이 없습니다.</p>
+                    <div class="glass-card p-8 rounded-3xl text-center text-slate-400 text-xs">
+                        <span class="material-symbols-outlined text-3xl mb-2 text-slate-300">receipt_long</span>
+                        <p class="font-medium">등록된 내역이 없습니다.</p>
                     </div>`;
                 return;
             }
 
-            // 최신 날짜 및 최신 생성 순으로 정렬
             const sorted = [...records].sort((a, b) => {
                 const mA = getSafeMonthDisplay(a.month);
                 const mB = getSafeMonthDisplay(b.month);
@@ -537,25 +716,29 @@
                 const isEx = parseInt(r.amount) < 0;
                 const isInterpolated = r.memo && r.memo.includes('평균 저축');
                 const item = document.createElement('div');
-                item.className = "bg-white p-4 rounded-2xl border border-gray-100 flex items-center justify-between shadow-sm hover:border-blue-100 transition-all";
+                item.className = "glass-card p-4 rounded-2.5xl flex items-center justify-between shadow-xs hover:border-blue-200 transition-all active:scale-99";
                 item.innerHTML = `
                     <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-full flex items-center justify-center font-bold text-xs ${isEx ? 'bg-rose-500 text-white' : 'bg-primary text-white'} shadow-sm">
+                        <div class="w-10 h-10 rounded-2xl flex items-center justify-center font-black text-xs ${isEx ? 'bg-rose-500 text-white shadow-rose-200' : 'bg-brand-500 text-white shadow-blue-200'} shadow-sm">
                             <span>${r.person || '자원'}</span>
                         </div>
                         <div>
                             <div class="flex items-center gap-1.5">
-                                <p class="font-bold text-on-surface text-[13px]">${r.memo || (isEx ? '지출' : '저축')}</p>
-                                ${isInterpolated ? `<span class="badge-interpolated text-[9px] px-1.5 py-0.5 rounded-md font-bold">미입력 자동 보간</span>` : ''}
+                                <p class="font-bold text-slate-900 text-[13px] tracking-tight">${r.memo || (isEx ? '지출' : '저축')}</p>
+                                ${isInterpolated ? `<span class="badge-interpolated text-[9px] px-1.5 py-0.5 rounded-md font-extrabold">미입력 보간</span>` : ''}
                             </div>
-                            <p class="text-[11px] text-gray-400 font-medium">${getSafeMonthDisplay(r.month)} • ${isEx ? '지출' : '저축'}</p>
+                            <p class="text-[11px] text-slate-400 font-semibold mt-0.5">${getSafeMonthDisplay(r.month)} • ${isEx ? '지출' : '저축'}</p>
                         </div>
                     </div>
                     <div class="text-right flex items-center gap-3">
-                        <p class="font-bold text-[14px] ${isEx ? 'text-rose-600' : 'text-primary'}">
-                            ${isEx ? '- ' : '+ '}₩ ${Math.abs(r.amount).toLocaleString()}
-                        </p>
-                        <button onclick="deleteRecord('${r.id}')" class="material-symbols-outlined text-gray-300 hover:text-red-500 transition-colors text-[18px]">delete</button>
+                        <div>
+                            <p class="font-black text-[14px] ${isEx ? 'text-rose-600' : 'text-brand-600'} tracking-tight">
+                                ${isEx ? '- ' : '+ '}₩ ${Math.abs(r.amount).toLocaleString()}
+                            </p>
+                        </div>
+                        <button onclick="deleteRecord('${r.id}')" aria-label="삭제" class="w-8 h-8 rounded-xl bg-slate-50 hover:bg-rose-50 hover:text-rose-500 text-slate-300 flex items-center justify-center transition-colors">
+                            <span class="material-symbols-outlined text-[18px]">delete</span>
+                        </button>
                     </div>`;
                 listEl.appendChild(item);
             });
@@ -563,7 +746,7 @@
 
         // 서버 동기화
         async function syncData() {
-            document.getElementById('syncStatus').innerHTML = '<span class="material-symbols-outlined text-[14px] animate-spin">sync</span> 동기화 중...';
+            document.getElementById('syncStatus').innerHTML = '<span class="material-symbols-outlined text-[13px] animate-spin">sync</span> 동기화 중...';
             try {
                 const response = await fetch(`${GAS_URL}?_t=${Date.now()}`);
                 const data = await response.json();
@@ -571,15 +754,12 @@
                 baseJawon = data.baseJawon !== undefined ? data.baseJawon : 1800000;
                 baseYein = data.baseYein !== undefined ? data.baseYein : 40000000;
                 
-                // 기존 데이터가 서버에 있으면 사용, 비어있거나 누락 시 기본 복원 데이터 유지
                 if (data.records && Array.isArray(data.records) && data.records.length > 0) {
-                    // 유효한 레코드인지 확인
                     records = data.records;
                 } else {
                     records = [...initialBackboneRecords];
                 }
 
-                // 기존 내역이 누락된 경우 기본 복원 내역 병합 확인
                 initialBackboneRecords.forEach(initR => {
                     const exists = records.some(r => r.memo === initR.memo && getSafeMonthDisplay(r.month) === initR.month && parseInt(r.amount) === initR.amount);
                     if (!exists) {
@@ -589,11 +769,11 @@
 
                 document.getElementById('baseJawon').value = baseJawon.toLocaleString();
                 document.getElementById('baseYein').value = baseYein.toLocaleString();
-                document.getElementById('syncStatus').innerHTML = '<span class="material-symbols-outlined text-[14px] text-green-500">cloud_done</span> 최신 상태';
+                document.getElementById('syncStatus').innerHTML = '<span class="material-symbols-outlined text-[13px] text-emerald-600">cloud_done</span> 최신 상태';
                 updateUI();
                 handleSnapshotChange();
             } catch (e) {
-                document.getElementById('syncStatus').innerHTML = '<span class="material-symbols-outlined text-[14px] text-red-400">cloud_off</span> 로컬 모드';
+                document.getElementById('syncStatus').innerHTML = '<span class="material-symbols-outlined text-[13px] text-amber-500">cloud_off</span> 로컬 모드';
                 if (records.length === 0) records = [...initialBackboneRecords];
                 updateUI();
                 handleSnapshotChange();
@@ -602,7 +782,7 @@
 
         // 서버 저장
         async function triggerSave() {
-            document.getElementById('syncStatus').innerHTML = '<span class="material-symbols-outlined text-[14px] animate-spin">sync</span> 서버 저장 중...';
+            document.getElementById('syncStatus').innerHTML = '<span class="material-symbols-outlined text-[13px] animate-spin">sync</span> 서버 저장 중...';
             baseJawon = getRawValue('baseJawon'); 
             baseYein = getRawValue('baseYein');
             updateUI();
@@ -613,9 +793,9 @@
                     body: JSON.stringify({ baseJawon, baseYein, records }), 
                     headers: { 'Content-Type': 'text/plain;charset=utf-8' } 
                 });
-                document.getElementById('syncStatus').innerHTML = '<span class="material-symbols-outlined text-[14px] text-green-500">cloud_done</span> 저장 완료';
+                document.getElementById('syncStatus').innerHTML = '<span class="material-symbols-outlined text-[13px] text-emerald-600">cloud_done</span> 저장 완료';
             } catch (e) { 
-                document.getElementById('syncStatus').innerHTML = '<span class="material-symbols-outlined text-[14px] text-amber-500">save</span> 로컬 반영'; 
+                document.getElementById('syncStatus').innerHTML = '<span class="material-symbols-outlined text-[13px] text-amber-500">save</span> 로컬 반영'; 
             }
         }
 
