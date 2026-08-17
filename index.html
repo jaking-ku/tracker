@@ -31,26 +31,28 @@
                             700: "#012d6e"
                         }
                     },
-                    borderRadius: { '2.5xl': '20px', '3xl': '24px', '4xl': '32px' }
+                    borderRadius: { '2.5xl': '18px', '3xl': '22px', '4xl': '28px' }
                 }
             }
         }
     </script>
     <style>
-        * { -webkit-tap-highlight-color: transparent; }
+        * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
         body { 
             font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif; 
             background: linear-gradient(180deg, #f4f6fb 0%, #edf1f8 100%); 
             min-height: 100vh;
+            padding-top: calc(env(safe-area-inset-top, 0px) + 12px) !important;
+            padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 24px) !important;
         }
-        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 450, 'GRAD' 0, 'opsz' 24; }
-        .material-symbols-fill { font-variation-settings: 'FILL' 1, 'wght' 450, 'GRAD' 0, 'opsz' 24; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 450, 'GRAD' 0, 'opsz' 20; }
+        .material-symbols-fill { font-variation-settings: 'FILL' 1, 'wght' 450, 'GRAD' 0, 'opsz' 20; }
         ::-webkit-scrollbar { display: none; }
         input, select { 
             border: none !important; 
             background: #f1f4fa !important; 
-            border-radius: 16px !important; 
-            font-size: 15px !important; 
+            border-radius: 14px !important; 
+            font-size: 14px !important; 
             transition: all 0.2s ease;
         }
         input:focus, select:focus { 
@@ -59,28 +61,32 @@
             outline: none !important; 
         }
         .glass-card {
-            background: rgba(255, 255, 255, 0.92);
+            background: rgba(255, 255, 255, 0.94);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.7);
-            box-shadow: 0 10px 30px -5px rgba(20, 40, 90, 0.05), 0 2px 6px -1px rgba(20, 40, 90, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 8px 24px -4px rgba(20, 40, 90, 0.05), 0 2px 6px -1px rgba(20, 40, 90, 0.02);
         }
         .hero-gradient {
             background: linear-gradient(135deg, #024099 0%, #1052c5 55%, #1d63ed 100%);
-            box-shadow: 0 16px 36px -8px rgba(2, 64, 153, 0.38);
+            box-shadow: 0 14px 32px -8px rgba(2, 64, 153, 0.35);
         }
         .badge-interpolated {
             background: #eef2ff;
             color: #3730a3;
             border: 1px solid #c7d2fe;
+            white-space: nowrap;
+            display: inline-flex;
+            align-items: center;
         }
         .chip-btn {
             background: #f1f4fa;
             color: #475569;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 600;
-            padding: 6px 12px;
-            border-radius: 12px;
+            padding: 5px 10px;
+            border-radius: 10px;
+            white-space: nowrap;
             transition: all 0.15s ease;
         }
         .chip-btn:active {
@@ -90,177 +96,172 @@
     </style>
 </head>
 
-<body class="p-4 md:p-6 max-w-lg mx-auto pb-32 text-slate-800 antialiased selection:bg-brand-500 selection:text-white">
+<body class="px-3.5 md:px-6 max-w-lg mx-auto text-slate-800 antialiased selection:bg-brand-500 selection:text-white">
 
-    <!-- 상단 모바일 헤더 -->
-    <header class="flex justify-between items-center mb-5 px-1 pt-1">
-        <div class="flex items-center gap-2.5">
-            <div class="w-10 h-10 rounded-2xl bg-brand-50 border border-brand-100 flex items-center justify-center text-brand-600 shadow-sm">
-                <span class="material-symbols-outlined text-[22px]">apartment</span>
+    <!-- 상단 모바일 헤더 (Safe Area 적용 및 컴팩트 폰트) -->
+    <header class="flex justify-between items-center mb-4 px-1">
+        <div class="flex items-center gap-2">
+            <div class="w-9 h-9 rounded-xl bg-brand-50 border border-brand-100 flex items-center justify-center text-brand-600 shadow-xs">
+                <span class="material-symbols-outlined text-[20px]">apartment</span>
             </div>
             <div>
-                <h1 class="text-xl font-black text-slate-900 tracking-tight flex items-center gap-1.5">
-                    <span>입주 자금 트래커</span>
-                </h1>
-                <p id="syncStatus" class="text-[11px] text-slate-400 font-medium flex items-center gap-1">
-                    <span class="material-symbols-outlined text-[13px]">sync</span> 동기화 준비 중
+                <h1 class="text-lg font-black text-slate-900 tracking-tight">입주 자금 트래커</h1>
+                <p id="syncStatus" class="text-[10px] text-slate-400 font-semibold flex items-center gap-0.5">
+                    <span class="material-symbols-outlined text-[12px]">sync</span> 동기화 준비 중
                 </p>
             </div>
         </div>
-        <div class="flex items-center gap-2">
-            <button onclick="syncData()" aria-label="새로고침" class="w-10 h-10 rounded-2xl bg-white shadow-sm border border-slate-100 flex items-center justify-center text-slate-600 active:scale-90 hover:bg-slate-50 transition-all">
-                <span class="material-symbols-outlined text-[20px]">refresh</span>
+        <div class="flex items-center gap-1.5">
+            <button onclick="syncData()" aria-label="새로고침" class="w-9 h-9 rounded-xl bg-white shadow-xs border border-slate-100 flex items-center justify-center text-slate-600 active:scale-90 hover:bg-slate-50 transition-all">
+                <span class="material-symbols-outlined text-[18px]">refresh</span>
             </button>
         </div>
     </header>
 
     <!-- 프리미엄 히어로 대시보드 카드 -->
-    <section class="hero-gradient text-white p-6 rounded-4xl mb-5 relative overflow-hidden">
-        <!-- 배경 장식 글로우 -->
-        <div class="absolute -right-10 -top-10 w-44 h-44 bg-white/10 rounded-full blur-2xl pointer-events-none"></div>
-        <div class="absolute -left-10 -bottom-10 w-44 h-44 bg-blue-400/20 rounded-full blur-2xl pointer-events-none"></div>
+    <section class="hero-gradient text-white p-5 rounded-3xl mb-4 relative overflow-hidden">
+        <div class="absolute -right-10 -top-10 w-36 h-36 bg-white/10 rounded-full blur-2xl pointer-events-none"></div>
+        <div class="absolute -left-10 -bottom-10 w-36 h-36 bg-blue-400/20 rounded-full blur-2xl pointer-events-none"></div>
 
         <div class="relative z-10">
             <div class="flex justify-between items-center mb-1">
-                <span class="text-[11px] font-semibold tracking-wide text-blue-100/80">목표까지 남은 잔액</span>
-                <span id="dDayBadge" class="text-[10px] font-extrabold bg-white/15 px-2.5 py-0.5 rounded-full backdrop-blur-sm">총 27개월 플랜</span>
+                <span class="text-[10px] font-semibold tracking-wide text-blue-100/80">목표까지 남은 잔액</span>
+                <span id="dDayBadge" class="text-[9px] font-extrabold bg-white/15 px-2 py-0.5 rounded-full backdrop-blur-sm">총 27개월 플랜</span>
             </div>
             
-            <h2 id="remainingStr" class="text-3xl font-black mb-6 tracking-tight">₩ 0</h2>
+            <h2 id="remainingStr" class="text-2xl font-black mb-5 tracking-tight">₩ 0</h2>
             
             <!-- 프로그레스 게이지 -->
-            <div class="mb-6 space-y-2">
-                <div class="flex justify-between items-end text-xs font-bold text-blue-100">
-                    <div class="flex items-center gap-1.5">
-                        <span class="text-[11px] opacity-75">목표</span>
-                        <span class="font-black text-white">₩ 120,155,979</span>
+            <div class="mb-5 space-y-1.5">
+                <div class="flex justify-between items-end text-[11px] font-bold text-blue-100">
+                    <div class="flex items-center gap-1">
+                        <span class="text-[10px] opacity-75">목표</span>
+                        <span class="font-extrabold text-white">₩ 120,155,979</span>
                     </div>
-                    <span id="percentStr" class="text-base font-black text-amber-300">0.0%</span>
+                    <span id="percentStr" class="text-sm font-black text-amber-300">0.0%</span>
                 </div>
-                <div class="w-full bg-black/20 h-3 rounded-full overflow-hidden p-0.5 backdrop-blur-sm">
-                    <div id="progressBar" class="bg-gradient-to-r from-amber-300 to-white h-full rounded-full transition-all duration-1000 shadow-sm" style="width: 0%"></div>
+                <div class="w-full bg-black/20 h-2.5 rounded-full overflow-hidden p-0.5 backdrop-blur-sm">
+                    <div id="progressBar" class="bg-gradient-to-r from-amber-300 to-white h-full rounded-full transition-all duration-1000 shadow-xs" style="width: 0%"></div>
                 </div>
             </div>
 
             <!-- 자산 분할 지분 요약 -->
-            <div class="grid grid-cols-3 gap-2 pt-4 border-t border-white/15">
-                <div class="text-center bg-white/5 rounded-2xl py-2 px-1 backdrop-blur-xs">
-                    <p class="text-[10px] text-blue-100/70 font-medium mb-0.5">자원 초기</p>
+            <div class="grid grid-cols-3 gap-1.5 pt-3.5 border-t border-white/15">
+                <div class="text-center bg-white/5 rounded-xl py-1.5 px-1 backdrop-blur-xs">
+                    <p class="text-[9px] text-blue-100/70 font-medium mb-0.5">자원 초기</p>
                     <div class="flex items-center justify-center gap-0.5">
                         <span class="text-[9px] font-bold opacity-80">₩</span>
                         <input type="text" id="baseJawon" oninput="formatInput(this); triggerSave();" 
-                               class="!bg-transparent text-white font-black p-0 w-full text-center border-none focus:ring-0 appearance-none text-xs" 
+                               class="!bg-transparent text-white font-black p-0 w-full text-center border-none focus:ring-0 appearance-none text-[11px]" 
                                style="background-color: transparent !important; -webkit-appearance: none;">
                     </div>
                 </div>
-                <div class="text-center bg-white/5 rounded-2xl py-2 px-1 backdrop-blur-xs">
-                    <p class="text-[10px] text-blue-100/70 font-medium mb-0.5">예인 초기</p>
+                <div class="text-center bg-white/5 rounded-xl py-1.5 px-1 backdrop-blur-xs">
+                    <p class="text-[9px] text-blue-100/70 font-medium mb-0.5">예인 초기</p>
                     <div class="flex items-center justify-center gap-0.5">
                         <span class="text-[9px] font-bold opacity-80">₩</span>
                         <input type="text" id="baseYein" oninput="formatInput(this); triggerSave();" 
-                               class="!bg-transparent text-white font-black p-0 w-full text-center border-none focus:ring-0 appearance-none text-xs" 
+                               class="!bg-transparent text-white font-black p-0 w-full text-center border-none focus:ring-0 appearance-none text-[11px]" 
                                style="background-color: transparent !important; -webkit-appearance: none;">
                     </div>
                 </div>
-                <div class="text-center bg-white/10 rounded-2xl py-2 px-1 border border-white/10">
-                    <p class="text-[10px] text-amber-200 font-bold mb-0.5">현재 총합 자산</p>
-                    <p id="totalAssetsStr" class="text-xs font-black text-amber-300">₩ 0</p>
+                <div class="text-center bg-white/10 rounded-xl py-1.5 px-1 border border-white/10">
+                    <p class="text-[9px] text-amber-200 font-bold mb-0.5">현재 총합 자산</p>
+                    <p id="totalAssetsStr" class="text-[11px] font-black text-amber-300">₩ 0</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- 스마트 분석 및 입주 시점 예상 결과 카드 (사용자 요구사항 완벽 반영) -->
-    <section class="grid grid-cols-1 gap-3.5 mb-5">
-        <!-- 1. 입주 시점 예상 최종 자산 카드 -->
-        <div id="predictionMainCard" class="glass-card p-5 rounded-3xl border border-blue-100/80 transition-all relative overflow-hidden">
-            <div class="flex items-center justify-between mb-3">
-                <div class="flex items-center gap-2">
-                    <div class="w-8 h-8 rounded-xl bg-brand-50 text-brand-600 flex items-center justify-center">
-                        <span class="material-symbols-outlined text-[20px]">analytics</span>
+    <!-- 입주 시점 예상 결과 카드 (모바일 최적화 스케일) -->
+    <section class="mb-4">
+        <div id="predictionMainCard" class="glass-card p-4 rounded-2.5xl border border-blue-100/80 transition-all relative overflow-hidden">
+            <div class="flex items-center justify-between mb-2.5">
+                <div class="flex items-center gap-1.5">
+                    <div class="w-7 h-7 rounded-lg bg-brand-50 text-brand-600 flex items-center justify-center">
+                        <span class="material-symbols-outlined text-[17px]">analytics</span>
                     </div>
                     <div>
-                        <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider">입주 시점 예상 총액</h3>
-                        <p id="predictionTargetDate" class="text-[11px] text-slate-400 font-medium">27개월 만기 시뮬레이션</p>
+                        <h3 class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">입주 시점 예상 총액</h3>
                     </div>
                 </div>
-                <span id="predictionBadge" class="text-[11px] font-bold px-2.5 py-1 rounded-xl bg-blue-50 text-brand-600">계산 중</span>
+                <span id="predictionBadge" class="text-[10px] font-bold px-2 py-0.5 rounded-lg bg-blue-50 text-brand-600">계산 중</span>
             </div>
 
-            <!-- 예상 최종 총액 수치 강조 -->
-            <div class="bg-slate-50/80 rounded-2xl p-4 border border-slate-100 mb-3">
-                <div class="flex justify-between items-baseline mb-1">
-                    <span class="text-[11px] font-bold text-slate-500">예상 최종 자산 총액</span>
-                    <span id="projectedTotalKorean" class="text-[11px] font-extrabold text-brand-600"></span>
+            <!-- 예상 최종 총액 수치 -->
+            <div class="bg-slate-50/80 rounded-xl p-3 border border-slate-100 mb-2.5">
+                <div class="flex justify-between items-baseline mb-0.5">
+                    <span class="text-[10px] font-bold text-slate-500">예상 최종 자산 총액</span>
+                    <span id="projectedTotalKorean" class="text-[10px] font-extrabold text-brand-600"></span>
                 </div>
-                <p id="projectedTotalStr" class="text-2xl font-black text-slate-900 tracking-tight">₩ 0</p>
+                <p id="projectedTotalStr" class="text-xl font-black text-slate-900 tracking-tight">₩ 0</p>
             </div>
 
-            <div class="grid grid-cols-2 gap-2 text-xs">
-                <div class="bg-white p-3 rounded-xl border border-slate-100">
-                    <p class="text-[10px] font-bold text-slate-400 mb-0.5">목표 대비 차액</p>
-                    <p id="predictionResult" class="font-black text-[13px] text-slate-800">계산 중...</p>
+            <div class="grid grid-cols-2 gap-1.5 text-xs">
+                <div class="bg-white p-2.5 rounded-xl border border-slate-100">
+                    <p class="text-[9px] font-bold text-slate-400 mb-0.5">목표 대비 차액</p>
+                    <p id="predictionResult" class="font-black text-xs text-slate-800">계산 중...</p>
                 </div>
-                <div class="bg-white p-3 rounded-xl border border-slate-100">
-                    <p class="text-[10px] font-bold text-slate-400 mb-0.5">월 평균 저축 페이스</p>
-                    <p id="avgSavedStr" class="font-black text-[13px] text-brand-600">₩ 0</p>
+                <div class="bg-white p-2.5 rounded-xl border border-slate-100">
+                    <p class="text-[9px] font-bold text-slate-400 mb-0.5">월 평균 저축 페이스</p>
+                    <p id="avgSavedStr" class="font-black text-xs text-brand-600">₩ 0</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- 인터랙티브 입력 섹션 (모바일 최적화 세그먼트 컨트롤) -->
-    <section class="glass-card p-5 rounded-3xl mb-6">
+    <!-- 인터랙티브 입력 섹션 -->
+    <section class="glass-card p-4 rounded-2.5xl mb-5">
         <!-- 모바일 탭 세그먼트 -->
-        <div class="bg-slate-100 p-1 rounded-2xl flex gap-1 mb-5">
-            <button id="modeSnapshotBtn" onclick="switchInputMode('snapshot')" class="flex-1 py-2.5 rounded-xl font-extrabold text-xs transition-all flex items-center justify-center gap-1.5 bg-white text-brand-600 shadow-xs">
-                <span class="material-symbols-outlined text-[17px]">auto_awesome</span>
+        <div class="bg-slate-100 p-1 rounded-xl flex gap-1 mb-4">
+            <button id="modeSnapshotBtn" onclick="switchInputMode('snapshot')" class="flex-1 py-2 rounded-lg font-extrabold text-xs transition-all flex items-center justify-center gap-1 bg-white text-brand-600 shadow-xs">
+                <span class="material-symbols-outlined text-[15px]">auto_awesome</span>
                 <span>스마트 총자산 입력</span>
             </button>
-            <button id="modeDirectBtn" onclick="switchInputMode('direct')" class="flex-1 py-2.5 rounded-xl font-bold text-xs transition-all flex items-center justify-center gap-1.5 text-slate-500 hover:text-slate-700">
-                <span class="material-symbols-outlined text-[17px]">edit_note</span>
+            <button id="modeDirectBtn" onclick="switchInputMode('direct')" class="flex-1 py-2 rounded-lg font-bold text-xs transition-all flex items-center justify-center gap-1 text-slate-500 hover:text-slate-700">
+                <span class="material-symbols-outlined text-[15px]">edit_note</span>
                 <span>직접 내역 추가</span>
             </button>
         </div>
 
         <!-- 1. 스마트 총자산 스냅샷 모드 -->
-        <div id="snapshotInputContainer" class="space-y-4">
-            <div class="flex items-start gap-2 bg-blue-50/70 p-3 rounded-2xl border border-blue-100/60">
-                <span class="material-symbols-outlined text-brand-600 text-[18px] mt-0.5 shrink-0">info</span>
-                <p class="text-[11px] text-slate-600 leading-relaxed font-medium">
-                    급여일 직전 통장의 현금 총액만 입력하면 <strong>이번 달 저축액이 자동 계산</strong>되며, 건너뛴 달은 평균으로 자동 분할 반영됩니다.
+        <div id="snapshotInputContainer" class="space-y-3.5">
+            <div class="flex items-start gap-1.5 bg-blue-50/70 p-2.5 rounded-xl border border-blue-100/60">
+                <span class="material-symbols-outlined text-brand-600 text-[16px] mt-0.5 shrink-0">info</span>
+                <p class="text-[10px] text-slate-600 leading-relaxed font-medium">
+                    급여일 직전 통장의 현금 총액만 입력하면 <strong>이번 달 저축액이 자동 계산</strong>되며, 건너뛴 달은 평균으로 분할 반영됩니다.
                 </p>
             </div>
 
-            <div class="grid grid-cols-12 gap-3">
+            <div class="grid grid-cols-12 gap-2">
                 <div class="col-span-4">
-                    <label class="text-[11px] text-slate-500 font-bold ml-1 mb-1.5 block">대상자</label>
-                    <select id="snapshotPerson" onchange="handleSnapshotChange()" class="w-full text-sm py-3 px-3 font-bold text-slate-800">
+                    <label class="text-[10px] text-slate-500 font-bold ml-1 mb-1 block">대상자</label>
+                    <select id="snapshotPerson" onchange="handleSnapshotChange()" class="w-full text-xs py-2.5 px-2.5 font-bold text-slate-800">
                         <option value="자원">자원</option>
                         <option value="예인">예인</option>
                     </select>
                 </div>
                 <div class="col-span-8">
-                    <label class="text-[11px] text-slate-500 font-bold ml-1 mb-1.5 block">기준 연월</label>
-                    <input type="month" id="snapshotMonth" onchange="handleSnapshotChange()" class="w-full text-sm py-3 px-3 font-bold text-slate-800">
+                    <label class="text-[10px] text-slate-500 font-bold ml-1 mb-1 block">기준 연월</label>
+                    <input type="month" id="snapshotMonth" onchange="handleSnapshotChange()" class="w-full text-xs py-2.5 px-2.5 font-bold text-slate-800">
                 </div>
             </div>
 
             <div>
-                <div class="flex justify-between items-center ml-1 mb-1.5">
-                    <label class="text-[11px] text-slate-500 font-bold">현재 현금 총자산 잔액</label>
-                    <span id="prevSnapshotLabel" class="text-[10px] text-slate-400 font-medium">직전 자산 계산 중...</span>
+                <div class="flex justify-between items-center ml-1 mb-1">
+                    <label class="text-[10px] text-slate-500 font-bold">현재 현금 총자산 잔액</label>
+                    <span id="prevSnapshotLabel" class="text-[9px] text-slate-400 font-medium">직전 자산 계산 중...</span>
                 </div>
                 <div class="relative">
-                    <span class="absolute left-4 top-1/2 -translate-y-1/2 font-bold text-slate-400 text-sm">₩</span>
-                    <input type="text" id="snapshotBalance" oninput="formatInput(this); handleSnapshotChange();" placeholder="0" class="w-full text-lg py-3.5 pl-8 pr-4 text-right font-black text-slate-900 tracking-tight">
+                    <span class="absolute left-3.5 top-1/2 -translate-y-1/2 font-bold text-slate-400 text-xs">₩</span>
+                    <input type="text" id="snapshotBalance" oninput="formatInput(this); handleSnapshotChange();" placeholder="0" class="w-full text-base py-3 pl-7 pr-3 text-right font-black text-slate-900 tracking-tight">
                 </div>
-                <!-- 한글 단위 실시간 환산 표기 -->
-                <p id="koreanWonPreview" class="text-right text-[11px] font-extrabold text-brand-600 mt-1 mr-1 h-4"></p>
+                <!-- 한글 단위 실시간 환산 -->
+                <p id="koreanWonPreview" class="text-right text-[10px] font-extrabold text-brand-600 mt-0.5 mr-1 h-3.5"></p>
             </div>
 
-            <!-- 빠른 금액 추가 칩 버튼 (모바일 편의 UX) -->
-            <div class="flex gap-1.5 overflow-x-auto pb-1">
+            <!-- 빠른 금액 칩 버튼 -->
+            <div class="flex gap-1 overflow-x-auto pb-0.5">
                 <button type="button" onclick="quickAddAmount('snapshotBalance', 1000000)" class="chip-btn">+100만</button>
                 <button type="button" onclick="quickAddAmount('snapshotBalance', 5000000)" class="chip-btn">+500만</button>
                 <button type="button" onclick="quickAddAmount('snapshotBalance', 10000000)" class="chip-btn">+1000만</button>
@@ -268,45 +269,45 @@
             </div>
 
             <!-- 실시간 스마트 피드백 카드 -->
-            <div id="smartFeedbackCard" class="bg-slate-50 border border-slate-200/80 p-3.5 rounded-2xl text-xs space-y-1.5 transition-all">
-                <div class="flex items-center gap-1.5 font-bold text-slate-700">
-                    <span class="material-symbols-outlined text-[16px] text-brand-600">insights</span>
-                    <span id="feedbackTitle">금액을 입력해 주세요</span>
+            <div id="smartFeedbackCard" class="bg-slate-50 border border-slate-200/80 p-3 rounded-xl text-xs space-y-1 transition-all">
+                <div class="flex items-center gap-1 font-bold text-slate-700">
+                    <span class="material-symbols-outlined text-[15px] text-brand-600">insights</span>
+                    <span id="feedbackTitle" class="text-[11px]">금액을 입력해 주세요</span>
                 </div>
-                <p id="feedbackDetail" class="text-slate-500 leading-relaxed text-[11px]">직전 기록 대비 순자산 증가액과 월별 저축 분할액이 자동 산출됩니다.</p>
+                <p id="feedbackDetail" class="text-slate-500 leading-relaxed text-[10px]">직전 기록 대비 순자산 증가액과 월별 저축 분할액이 자동 산출됩니다.</p>
             </div>
 
-            <button onclick="applySnapshotSaving()" class="w-full bg-brand-500 hover:bg-brand-600 text-white font-extrabold py-4 rounded-2xl active:scale-98 transition-all shadow-lg shadow-blue-500/25 flex items-center justify-center gap-2">
-                <span class="material-symbols-outlined text-[20px]">check_circle</span>
+            <button onclick="applySnapshotSaving()" class="w-full bg-brand-500 hover:bg-brand-600 text-white font-extrabold py-3.5 rounded-xl active:scale-98 transition-all shadow-md shadow-blue-500/20 flex items-center justify-center gap-1.5 text-xs">
+                <span class="material-symbols-outlined text-[17px]">check_circle</span>
                 <span>자산 기록 및 자동 계산 반영</span>
             </button>
         </div>
 
-        <!-- 2. 직접 내역 추가 모드 (기존 방식) -->
-        <div id="directInputContainer" class="space-y-4 hidden">
-            <div class="grid grid-cols-12 gap-3">
+        <!-- 2. 직접 내역 추가 모드 (버튼 레이아웃 수정) -->
+        <div id="directInputContainer" class="space-y-3.5 hidden">
+            <div class="grid grid-cols-12 gap-2">
                 <div class="col-span-4">
-                    <label class="text-[11px] text-slate-500 font-bold ml-1 mb-1.5 block">작성자</label>
-                    <select id="savePerson" class="w-full text-sm py-3 px-3 font-bold text-slate-800">
+                    <label class="text-[10px] text-slate-500 font-bold ml-1 mb-1 block">작성자</label>
+                    <select id="savePerson" class="w-full text-xs py-2.5 px-2.5 font-bold text-slate-800">
                         <option value="자원">자원</option>
                         <option value="예인">예인</option>
                     </select>
                 </div>
                 <div class="col-span-8">
-                    <label class="text-[11px] text-slate-500 font-bold ml-1 mb-1.5 block">연도 및 월</label>
-                    <input type="month" id="saveMonth" class="w-full text-sm py-3 px-3 font-bold text-slate-800">
+                    <label class="text-[10px] text-slate-500 font-bold ml-1 mb-1 block">연도 및 월</label>
+                    <input type="month" id="saveMonth" class="w-full text-xs py-2.5 px-2.5 font-bold text-slate-800">
                 </div>
             </div>
             <div>
-                <label class="text-[11px] text-slate-500 font-bold ml-1 mb-1.5 block">금액</label>
+                <label class="text-[10px] text-slate-500 font-bold ml-1 mb-1 block">금액</label>
                 <div class="relative">
-                    <span class="absolute left-4 top-1/2 -translate-y-1/2 font-bold text-slate-400 text-sm">₩</span>
-                    <input type="text" id="saveAmount" oninput="formatInput(this); updateDirectKoreanPreview();" placeholder="0" class="w-full text-lg py-3.5 pl-8 pr-4 text-right font-black text-slate-900 tracking-tight">
+                    <span class="absolute left-3.5 top-1/2 -translate-y-1/2 font-bold text-slate-400 text-xs">₩</span>
+                    <input type="text" id="saveAmount" oninput="formatInput(this); updateDirectKoreanPreview();" placeholder="0" class="w-full text-base py-3 pl-7 pr-3 text-right font-black text-slate-900 tracking-tight">
                 </div>
-                <p id="directKoreanWonPreview" class="text-right text-[11px] font-extrabold text-brand-600 mt-1 mr-1 h-4"></p>
+                <p id="directKoreanWonPreview" class="text-right text-[10px] font-extrabold text-brand-600 mt-0.5 mr-1 h-3.5"></p>
             </div>
 
-            <div class="flex gap-1.5 overflow-x-auto pb-1">
+            <div class="flex gap-1 overflow-x-auto pb-0.5">
                 <button type="button" onclick="quickAddAmount('saveAmount', 100000)" class="chip-btn">+10만</button>
                 <button type="button" onclick="quickAddAmount('saveAmount', 500000)" class="chip-btn">+50만</button>
                 <button type="button" onclick="quickAddAmount('saveAmount', 1000000)" class="chip-btn">+100만</button>
@@ -314,17 +315,18 @@
             </div>
 
             <div>
-                <label class="text-[11px] text-slate-500 font-bold ml-1 mb-1.5 block">메모</label>
-                <input type="text" id="saveMemo" placeholder="내용을 입력하세요 (예: 성과금, 생활비 등)" class="w-full text-sm py-3.5 px-4 font-medium">
+                <label class="text-[10px] text-slate-500 font-bold ml-1 mb-1 block">메모</label>
+                <input type="text" id="saveMemo" placeholder="내용 입력 (예: 성과금, 생활비 등)" class="w-full text-xs py-3 px-3 font-medium">
             </div>
             
-            <div class="flex gap-2.5 pt-1">
-                <button onclick="addDirectRecord(1)" class="flex-2 bg-brand-500 text-white font-extrabold py-3.5 rounded-2xl active:scale-98 transition-all shadow-md shadow-blue-500/20 flex items-center justify-center gap-1">
-                    <span class="material-symbols-outlined text-[18px]">add_circle</span>
+            <!-- 버튼 균등 2분할 (튀어나옴 방지) -->
+            <div class="grid grid-cols-2 gap-2 pt-0.5">
+                <button onclick="addDirectRecord(1)" class="w-full bg-brand-500 text-white font-extrabold py-3 px-2 rounded-xl active:scale-98 transition-all shadow-sm flex items-center justify-center gap-1 text-xs whitespace-nowrap">
+                    <span class="material-symbols-outlined text-[16px]">add_circle</span>
                     <span>저축 추가</span>
                 </button>
-                <button onclick="addDirectRecord(-1)" class="flex-1 bg-rose-50 text-rose-600 font-extrabold py-3.5 rounded-2xl active:scale-98 transition-all border border-rose-100 flex items-center justify-center gap-1">
-                    <span class="material-symbols-outlined text-[18px]">remove_circle</span>
+                <button onclick="addDirectRecord(-1)" class="w-full bg-rose-50 text-rose-600 font-extrabold py-3 px-2 rounded-xl active:scale-98 transition-all border border-rose-100 flex items-center justify-center gap-1 text-xs whitespace-nowrap">
+                    <span class="material-symbols-outlined text-[16px]">remove_circle</span>
                     <span>지출 추가</span>
                 </button>
             </div>
@@ -333,15 +335,15 @@
 
     <!-- 히스토리 목록 헤더 및 리스트 -->
     <section>
-        <div class="flex justify-between items-center mb-3 px-1">
-            <h3 class="font-extrabold text-slate-900 text-sm flex items-center gap-1.5">
-                <span class="material-symbols-outlined text-[18px] text-brand-600">receipt_long</span>
+        <div class="flex justify-between items-center mb-2.5 px-1">
+            <h3 class="font-extrabold text-slate-900 text-xs flex items-center gap-1">
+                <span class="material-symbols-outlined text-[16px] text-brand-600">receipt_long</span>
                 <span>전체 내역 히스토리</span>
             </h3>
-            <span id="historyCountBadge" class="text-[11px] font-extrabold px-2 py-0.5 rounded-lg bg-white border border-slate-100 text-slate-500 shadow-2xs">0건</span>
+            <span id="historyCountBadge" class="text-[10px] font-extrabold px-1.5 py-0.5 rounded-md bg-white border border-slate-100 text-slate-500">0건</span>
         </div>
 
-        <div id="historyList" class="space-y-2.5">
+        <div id="historyList" class="space-y-2">
             <!-- 내역 카드 리스트 -->
         </div>
     </section>
@@ -349,7 +351,7 @@
     <script>
         const GAS_URL = "https://script.google.com/macros/s/AKfycbzMnN0TuWoyh4ibVMftW0lG9vqxB3BgeCYBYy8xDS8vYQPGo-VXNlkT_EpE_JDQVKtd/exec"; 
         const TARGET_AMOUNT = 120155979;
-        const TOTAL_MONTHS = 27; // 전체 관리 목표 개월 수
+        const TOTAL_MONTHS = 27;
 
         // 원본 백본 데이터
         const initialBackboneRecords = [
@@ -364,9 +366,8 @@
         let baseJawon = 1800000;
         let baseYein = 40000000;
         let records = [];
-        let currentInputMode = 'snapshot'; // 'snapshot' | 'direct'
+        let currentInputMode = 'snapshot';
 
-        // 유틸리티 함수
         function formatInput(el) {
             let val = el.value.replace(/[^0-9]/g, "");
             if (val.length > 0) el.value = parseInt(val).toLocaleString(); else el.value = "";
@@ -377,7 +378,6 @@
             return parseInt(el.value.replace(/,/g, "")) || 0; 
         }
 
-        // 한국어 금액 단위 포맷 (모바일 0 개수 헷갈림 방지)
         function formatKoreanWon(num) {
             if (!num || isNaN(num) || num === 0) return '';
             const isNegative = num < 0;
@@ -423,7 +423,6 @@
             return `${ry}-${rmo}`;
         }
 
-        // 빠른 금액 추가 버튼 함수
         function quickAddAmount(inputId, addValue) {
             const current = getRawValue(inputId);
             const nextVal = current + addValue;
@@ -451,7 +450,6 @@
             document.getElementById('directKoreanWonPreview').textContent = formatKoreanWon(amount);
         }
 
-        // 특정 인원의 특정 월 시점까지의 누적 자산 잔액 계산
         function calculateCumulativeBalance(person, targetMonth = null) {
             const initial = person === '자원' ? baseJawon : baseYein;
             const personRecords = records.filter(r => r.person === person);
@@ -463,7 +461,6 @@
             return initial + filtered.reduce((sum, r) => sum + parseInt(r.amount || 0), 0);
         }
 
-        // 특정 인원의 가장 최근 기록 월 조회
         function getLatestRecordedMonth(person) {
             const personRecords = records
                 .filter(r => r.person === person)
@@ -472,7 +469,6 @@
             return personRecords.length > 0 ? personRecords[personRecords.length - 1] : null;
         }
 
-        // 입력 모드 전환
         function switchInputMode(mode) {
             currentInputMode = mode;
             const snapBtn = document.getElementById('modeSnapshotBtn');
@@ -481,20 +477,19 @@
             const dirCont = document.getElementById('directInputContainer');
 
             if (mode === 'snapshot') {
-                snapBtn.className = "flex-1 py-2.5 rounded-xl font-extrabold text-xs transition-all flex items-center justify-center gap-1.5 bg-white text-brand-600 shadow-xs";
-                dirBtn.className = "flex-1 py-2.5 rounded-xl font-bold text-xs transition-all flex items-center justify-center gap-1.5 text-slate-500 hover:text-slate-700";
+                snapBtn.className = "flex-1 py-2 rounded-lg font-extrabold text-xs transition-all flex items-center justify-center gap-1 bg-white text-brand-600 shadow-xs";
+                dirBtn.className = "flex-1 py-2 rounded-lg font-bold text-xs transition-all flex items-center justify-center gap-1 text-slate-500 hover:text-slate-700";
                 snapCont.classList.remove('hidden');
                 dirCont.classList.add('hidden');
                 handleSnapshotChange();
             } else {
-                dirBtn.className = "flex-1 py-2.5 rounded-xl font-extrabold text-xs transition-all flex items-center justify-center gap-1.5 bg-white text-brand-600 shadow-xs";
-                snapBtn.className = "flex-1 py-2.5 rounded-xl font-bold text-xs transition-all flex items-center justify-center gap-1.5 text-slate-500 hover:text-slate-700";
+                dirBtn.className = "flex-1 py-2 rounded-lg font-extrabold text-xs transition-all flex items-center justify-center gap-1 bg-white text-brand-600 shadow-xs";
+                snapBtn.className = "flex-1 py-2 rounded-lg font-bold text-xs transition-all flex items-center justify-center gap-1 text-slate-500 hover:text-slate-700";
                 dirCont.classList.remove('hidden');
                 snapCont.classList.add('hidden');
             }
         }
 
-        // 스마트 총자산 입력 시 실시간 분석 피드백
         function handleSnapshotChange() {
             const person = document.getElementById('snapshotPerson').value;
             const targetMonth = document.getElementById('snapshotMonth').value;
@@ -546,7 +541,6 @@
             }
         }
 
-        // 스마트 총자산 입력 확정 및 자동 레코드 분할 생성
         function applySnapshotSaving() {
             const person = document.getElementById('snapshotPerson').value;
             const targetMonth = document.getElementById('snapshotMonth').value;
@@ -600,7 +594,6 @@
             triggerSave();
         }
 
-        // 직접 내역 추가 (기존 방식)
         function addDirectRecord(type) {
             const person = document.getElementById('savePerson').value;
             const month = document.getElementById('saveMonth').value;
@@ -622,7 +615,6 @@
             triggerSave();
         }
 
-        // 내역 삭제
         function deleteRecord(id) {
             if (confirm("해당 내역을 삭제하시겠습니까?")) {
                 records = records.filter(r => String(r.id) !== String(id));
@@ -630,7 +622,6 @@
             }
         }
 
-        // UI 갱신 함수 (예상 총액 및 차액 정밀 연산)
         function updateUI() {
             const totalSaved = records.reduce((sum, r) => sum + parseInt(r.amount || 0), 0);
             const currentTotal = getRawValue('baseJawon') + getRawValue('baseYein') + totalSaved;
@@ -643,7 +634,6 @@
             document.getElementById('progressBar').style.width = percent + "%";
             document.getElementById('percentStr').textContent = `${percent.toFixed(1)}%`;
 
-            // 월별 저축액 집계
             const monthMap = {};
             records.forEach(r => {
                 const m = getSafeMonthDisplay(r.month);
@@ -658,12 +648,10 @@
                 const avg = sumSavings / recordedCount;
                 document.getElementById('avgSavedStr').textContent = `₩ ${Math.round(avg).toLocaleString()}`;
 
-                // 입주 시점 예상 최종 자산 총액 계산
                 const remainingMonths = Math.max(0, TOTAL_MONTHS - recordedCount);
                 const projectedTotal = currentTotal + (avg * remainingMonths);
                 const diff = projectedTotal - TARGET_AMOUNT;
 
-                // 예상 최종 총액 및 한글 금액 표기
                 document.getElementById('projectedTotalStr').textContent = `₩ ${Math.round(projectedTotal).toLocaleString()}`;
                 document.getElementById('projectedTotalKorean').textContent = formatKoreanWon(Math.round(projectedTotal));
                 
@@ -671,12 +659,12 @@
                 const pBadge = document.getElementById('predictionBadge');
 
                 if (diff >= 0) {
-                    pEl.innerHTML = `<span class="text-brand-600 font-black">+ ₩ ${Math.round(diff).toLocaleString()} 초과</span>`;
-                    pBadge.className = "text-[11px] font-extrabold px-2.5 py-1 rounded-xl bg-blue-50 text-brand-600 border border-blue-100";
+                    pEl.innerHTML = `<span class="text-brand-600 font-black whitespace-nowrap">+ ₩ ${Math.round(diff).toLocaleString()}</span>`;
+                    pBadge.className = "text-[9px] font-extrabold px-2 py-0.5 rounded-lg bg-blue-50 text-brand-600 border border-blue-100";
                     pBadge.textContent = "목표 초과 달성";
                 } else {
-                    pEl.innerHTML = `<span class="text-rose-600 font-black">₩ ${Math.round(Math.abs(diff)).toLocaleString()} 부족</span>`;
-                    pBadge.className = "text-[11px] font-extrabold px-2.5 py-1 rounded-xl bg-rose-50 text-rose-600 border border-rose-100";
+                    pEl.innerHTML = `<span class="text-rose-600 font-black whitespace-nowrap">₩ ${Math.round(Math.abs(diff)).toLocaleString()} 부족</span>`;
+                    pBadge.className = "text-[9px] font-extrabold px-2 py-0.5 rounded-lg bg-rose-50 text-rose-600 border border-rose-100";
                     pBadge.textContent = "저축 상향 필요";
                 }
             } else {
@@ -690,7 +678,7 @@
             renderHistoryList();
         }
 
-        // 히스토리 목록 렌더링
+        // 히스토리 리스트 렌더링 (줄바꿈 방지 및 뱃지 최적화)
         function renderHistoryList() {
             const listEl = document.getElementById('historyList');
             listEl.innerHTML = '';
@@ -698,8 +686,8 @@
 
             if (records.length === 0) {
                 listEl.innerHTML = `
-                    <div class="glass-card p-8 rounded-3xl text-center text-slate-400 text-xs">
-                        <span class="material-symbols-outlined text-3xl mb-2 text-slate-300">receipt_long</span>
+                    <div class="glass-card p-6 rounded-2xl text-center text-slate-400 text-xs">
+                        <span class="material-symbols-outlined text-2xl mb-1 text-slate-300">receipt_long</span>
                         <p class="font-medium">등록된 내역이 없습니다.</p>
                     </div>`;
                 return;
@@ -716,37 +704,34 @@
                 const isEx = parseInt(r.amount) < 0;
                 const isInterpolated = r.memo && r.memo.includes('평균 저축');
                 const item = document.createElement('div');
-                item.className = "glass-card p-4 rounded-2.5xl flex items-center justify-between shadow-xs hover:border-blue-200 transition-all active:scale-99";
+                item.className = "glass-card p-3.5 rounded-2xl flex items-center justify-between gap-2 shadow-xs hover:border-blue-200 transition-all active:scale-99";
                 item.innerHTML = `
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-2xl flex items-center justify-center font-black text-xs ${isEx ? 'bg-rose-500 text-white shadow-rose-200' : 'bg-brand-500 text-white shadow-blue-200'} shadow-sm">
+                    <div class="flex items-center gap-2.5 min-w-0 flex-1">
+                        <div class="w-8 h-8 rounded-xl flex items-center justify-center font-black text-[11px] shrink-0 ${isEx ? 'bg-rose-500 text-white shadow-rose-200' : 'bg-brand-500 text-white shadow-blue-200'} shadow-xs">
                             <span>${r.person || '자원'}</span>
                         </div>
-                        <div>
-                            <div class="flex items-center gap-1.5">
-                                <p class="font-bold text-slate-900 text-[13px] tracking-tight">${r.memo || (isEx ? '지출' : '저축')}</p>
-                                ${isInterpolated ? `<span class="badge-interpolated text-[9px] px-1.5 py-0.5 rounded-md font-extrabold">미입력 보간</span>` : ''}
+                        <div class="min-w-0 flex-1">
+                            <div class="flex items-center gap-1.5 flex-wrap">
+                                <p class="font-bold text-slate-900 text-xs tracking-tight truncate">${r.memo || (isEx ? '지출' : '저축')}</p>
+                                ${isInterpolated ? `<span class="badge-interpolated text-[9px] px-1 py-0.2 rounded font-extrabold shrink-0">미입력 보간</span>` : ''}
                             </div>
-                            <p class="text-[11px] text-slate-400 font-semibold mt-0.5">${getSafeMonthDisplay(r.month)} • ${isEx ? '지출' : '저축'}</p>
+                            <p class="text-[10px] text-slate-400 font-semibold mt-0.5">${getSafeMonthDisplay(r.month)} • ${isEx ? '지출' : '저축'}</p>
                         </div>
                     </div>
-                    <div class="text-right flex items-center gap-3">
-                        <div>
-                            <p class="font-black text-[14px] ${isEx ? 'text-rose-600' : 'text-brand-600'} tracking-tight">
-                                ${isEx ? '- ' : '+ '}₩ ${Math.abs(r.amount).toLocaleString()}
-                            </p>
-                        </div>
-                        <button onclick="deleteRecord('${r.id}')" aria-label="삭제" class="w-8 h-8 rounded-xl bg-slate-50 hover:bg-rose-50 hover:text-rose-500 text-slate-300 flex items-center justify-center transition-colors">
-                            <span class="material-symbols-outlined text-[18px]">delete</span>
+                    <div class="text-right flex items-center gap-2 shrink-0">
+                        <p class="font-black text-xs ${isEx ? 'text-rose-600' : 'text-brand-600'} tracking-tight whitespace-nowrap">
+                            ${isEx ? '- ' : '+ '}₩ ${Math.abs(r.amount).toLocaleString()}
+                        </p>
+                        <button onclick="deleteRecord('${r.id}')" aria-label="삭제" class="w-7 h-7 rounded-lg bg-slate-50 hover:bg-rose-50 hover:text-rose-500 text-slate-300 flex items-center justify-center transition-colors">
+                            <span class="material-symbols-outlined text-[16px]">delete</span>
                         </button>
                     </div>`;
                 listEl.appendChild(item);
             });
         }
 
-        // 서버 동기화
         async function syncData() {
-            document.getElementById('syncStatus').innerHTML = '<span class="material-symbols-outlined text-[13px] animate-spin">sync</span> 동기화 중...';
+            document.getElementById('syncStatus').innerHTML = '<span class="material-symbols-outlined text-[12px] animate-spin">sync</span> 동기화 중...';
             try {
                 const response = await fetch(`${GAS_URL}?_t=${Date.now()}`);
                 const data = await response.json();
@@ -769,20 +754,19 @@
 
                 document.getElementById('baseJawon').value = baseJawon.toLocaleString();
                 document.getElementById('baseYein').value = baseYein.toLocaleString();
-                document.getElementById('syncStatus').innerHTML = '<span class="material-symbols-outlined text-[13px] text-emerald-600">cloud_done</span> 최신 상태';
+                document.getElementById('syncStatus').innerHTML = '<span class="material-symbols-outlined text-[12px] text-emerald-600">cloud_done</span> 최신 상태';
                 updateUI();
                 handleSnapshotChange();
             } catch (e) {
-                document.getElementById('syncStatus').innerHTML = '<span class="material-symbols-outlined text-[13px] text-amber-500">cloud_off</span> 로컬 모드';
+                document.getElementById('syncStatus').innerHTML = '<span class="material-symbols-outlined text-[12px] text-amber-500">cloud_off</span> 로컬 모드';
                 if (records.length === 0) records = [...initialBackboneRecords];
                 updateUI();
                 handleSnapshotChange();
             }
         }
 
-        // 서버 저장
         async function triggerSave() {
-            document.getElementById('syncStatus').innerHTML = '<span class="material-symbols-outlined text-[13px] animate-spin">sync</span> 서버 저장 중...';
+            document.getElementById('syncStatus').innerHTML = '<span class="material-symbols-outlined text-[12px] animate-spin">sync</span> 서버 저장 중...';
             baseJawon = getRawValue('baseJawon'); 
             baseYein = getRawValue('baseYein');
             updateUI();
@@ -793,9 +777,9 @@
                     body: JSON.stringify({ baseJawon, baseYein, records }), 
                     headers: { 'Content-Type': 'text/plain;charset=utf-8' } 
                 });
-                document.getElementById('syncStatus').innerHTML = '<span class="material-symbols-outlined text-[13px] text-emerald-600">cloud_done</span> 저장 완료';
+                document.getElementById('syncStatus').innerHTML = '<span class="material-symbols-outlined text-[12px] text-emerald-600">cloud_done</span> 저장 완료';
             } catch (e) { 
-                document.getElementById('syncStatus').innerHTML = '<span class="material-symbols-outlined text-[13px] text-amber-500">save</span> 로컬 반영'; 
+                document.getElementById('syncStatus').innerHTML = '<span class="material-symbols-outlined text-[12px] text-amber-500">save</span> 로컬 반영'; 
             }
         }
 
