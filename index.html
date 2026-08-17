@@ -8,6 +8,10 @@
     <meta name="apple-mobile-web-app-title" content="입주 자금 관리">
     <link rel="apple-touch-icon" href="./icon.png">
     
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    
     <title>입주 자금 트래커</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -561,7 +565,7 @@
         async function syncData() {
             document.getElementById('syncStatus').innerHTML = '<span class="material-symbols-outlined text-[14px] animate-spin">sync</span> 동기화 중...';
             try {
-                const response = await fetch(GAS_URL);
+                const response = await fetch(`${GAS_URL}?_t=${Date.now()}`);
                 const data = await response.json();
                 
                 baseJawon = data.baseJawon !== undefined ? data.baseJawon : 1800000;
